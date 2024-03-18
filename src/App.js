@@ -1,25 +1,30 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import PdfMaker from './components/PdfMaker/PdfMaker';
+import HtmlWindow from './components/HtmlWindow/HtmlWindow';
+import ConvertButton from './components/ConvertButton/ConvertButton';
+import TxtToJson from './components/TxtToJson/TxtToJson';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [html, setHtml] = useState('');
+  const [showTxtToJson, setShowTxtToJson] = useState(false);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="content-area">
+        <PdfMaker html={html} setHtml={setHtml} />
+        <HtmlWindow htmlContent={html} />
+      </div>
+      <div className="buttons-area">
+        <ConvertButton html={html} />
+        <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
+  {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
+</button>
+
+      </div>
+      <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />
     </div>
   );
-}
+};
 
 export default App;

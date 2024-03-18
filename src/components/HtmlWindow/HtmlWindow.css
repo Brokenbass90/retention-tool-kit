@@ -1,0 +1,7 @@
+.preview-container {
+    background-color: #f5f5f5; 
+    overflow: auto; 
+    flex: 1;
+    height: 110%;
+  }
+  
