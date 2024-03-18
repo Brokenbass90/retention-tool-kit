@@ -8,7 +8,6 @@ export const processFiles = (files, folderName) => {
       return;
     }
 
-    // Запрашиваем у пользователя название для файлов JSON
     const jsonFileName = prompt("Enter a name for the JSON files:", folderName) || folderName;
 
     const outputName = jsonFileName.replace(/-out$/, '') + '-out';

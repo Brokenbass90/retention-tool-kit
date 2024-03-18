@@ -58,10 +58,10 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.3s ease-in-out;
-    transform: translateY(100%); /* Изначально панель скрыта */
+    transform: translateY(100%);
   }
   
   .txt-to-json-panel.visible {
-    transform: translateY(0); /* Панель видима */
+    transform: translateY(0);
   }
   
