@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/retention-tool-kit/static/css/main.da6f1305.css",
-    "main.js": "/retention-tool-kit/static/js/main.cdd81c05.js",
-    "index.html": "/retention-tool-kit/index.html",
-    "main.da6f1305.css.map": "/retention-tool-kit/static/css/main.da6f1305.css.map",
-    "main.cdd81c05.js.map": "/retention-tool-kit/static/js/main.cdd81c05.js.map"
+    "main.css": "/static/css/main.da6f1305.css",
+    "main.js": "/static/js/main.cdd81c05.js",
+    "index.html": "/index.html",
+    "main.da6f1305.css.map": "/static/css/main.da6f1305.css.map",
+    "main.cdd81c05.js.map": "/static/js/main.cdd81c05.js.map"
   },
   "entrypoints": [
     "static/css/main.da6f1305.css",
