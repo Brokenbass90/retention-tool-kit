@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.47c0fe1c.chunk.css",
-    "main.js": "/static/js/main.f8ebd151.chunk.js",
-    "main.js.map": "/static/js/main.f8ebd151.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/js/2.509d4cc9.chunk.js": "/static/js/2.509d4cc9.chunk.js",
-    "static/js/2.509d4cc9.chunk.js.map": "/static/js/2.509d4cc9.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.7b6c3bfe9d0f393ac9c86e7e59d43ba4.js": "/precache-manifest.7b6c3bfe9d0f393ac9c86e7e59d43ba4.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.47c0fe1c.chunk.css.map": "/static/css/main.47c0fe1c.chunk.css.map"
+    "main.css": "/retention-tool-kit/static/css/main.47c0fe1c.chunk.css",
+    "main.js": "/retention-tool-kit/static/js/main.f8ebd151.chunk.js",
+    "main.js.map": "/retention-tool-kit/static/js/main.f8ebd151.chunk.js.map",
+    "runtime~main.js": "/retention-tool-kit/static/js/runtime~main.afc0c196.js",
+    "runtime~main.js.map": "/retention-tool-kit/static/js/runtime~main.afc0c196.js.map",
+    "static/js/2.509d4cc9.chunk.js": "/retention-tool-kit/static/js/2.509d4cc9.chunk.js",
+    "static/js/2.509d4cc9.chunk.js.map": "/retention-tool-kit/static/js/2.509d4cc9.chunk.js.map",
+    "index.html": "/retention-tool-kit/index.html",
+    "precache-manifest.25f4e50bc112c0b176bf2b22d079df20.js": "/retention-tool-kit/precache-manifest.25f4e50bc112c0b176bf2b22d079df20.js",
+    "service-worker.js": "/retention-tool-kit/service-worker.js",
+    "static/css/main.47c0fe1c.chunk.css.map": "/retention-tool-kit/static/css/main.47c0fe1c.chunk.css.map"
   }
 }
