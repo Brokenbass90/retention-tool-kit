@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './ConvertButton.css';
 
 const ConvertButton = ({ html }) => {
-  const [isConverting, setIsConverting] = useState(false); // Добавляем состояние для отслеживания процесса конвертации
+  const [isConverting, setIsConverting] = useState(false); 
 
   const handleConvertToPDF = async () => {
-    setIsConverting(true); // Начинаем процесс конвертации, делаем кнопку неактивной
+    setIsConverting(true); 
     try {
       const response = await fetch('/generate-pdf', {
         method: 'POST',
@@ -29,7 +29,7 @@ const ConvertButton = ({ html }) => {
     } catch (error) {
       console.error('An error occurred:', error);
     } finally {
-      setIsConverting(false); // Завершаем процесс конвертации, делаем кнопку снова активной
+      setIsConverting(false); 
     }
   };
 
