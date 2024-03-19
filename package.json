@@ -2,7 +2,6 @@
   "name": "html-to-pdf-converter",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://brokenbass90.github.io/retention-tool-kit",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -23,13 +22,15 @@
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server/server.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "build:gh-pages": "cross-env PUBLIC_URL=https://brokenbass90.github.io/retention-tool-kit npm run build",
+    "heroku-postbuild": "npm run build"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "gh-pages": "^6.1.1",
     "react-app-rewired": "^2.2.1"
   }
