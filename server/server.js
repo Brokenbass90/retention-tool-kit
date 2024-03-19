@@ -4,15 +4,15 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(express.static('build'));
-app.use(express.text({ type: 'text/html' }));
+// Увеличиваем лимит размера тела запроса
+app.use(express.text({ type: 'text/html', limit: '50mb' }));
 
 app.post('/generate-pdf', async (req, res) => {
   const html = req.body;
 
-
   const browser = await puppeteer.launch({
-    headless: true, 
-    args: ['--no-sandbox', '--disable-setuid-sandbox'], 
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
   });
 
