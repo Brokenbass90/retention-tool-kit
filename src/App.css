@@ -1,4 +1,4 @@
-.App {
+  .App {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -6,7 +6,7 @@
     width: 100%;
     overflow: hidden; 
   }
-  
+ 
   .content-area {
     display: flex;
     flex: 1;
@@ -28,8 +28,20 @@
     background-color: #f1f8ff; 
     justify-content: right; 
     align-items: center;
-    padding: 30px;
+    padding: 20px;
     border-top: 1px solid #d9d9d9;
     gap: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .content-area {
+      flex-direction: column;
+    }
+    
+    .pdf-maker, .html-window {
+      height: 50%; 
+      width: 100%; 
+      
+    }
   }
   
