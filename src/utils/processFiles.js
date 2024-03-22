@@ -1,42 +1,42 @@
-export const processFiles = async (files, setLocales, setLocalesContent) => {
-  const localesSet = new Set();
-  const contentMap = {};
+export const processFiles = async (files, setFoldersData) => {
+  const newFoldersData = {};
 
-  const readFile = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  for (const file of files) {
+    // Пропускаем не-JSON файлы
+    if (!file.name.endsWith('.json')) {
+      console.warn(`Пропущен не-JSON файл: ${file.name}`);
+      continue;
+    }
 
-    reader.onload = (e) => {
-      try {
-        const content = JSON.parse(e.target.result);
-        const pathParts = file.webkitRelativePath.split('/');
-        const locale = pathParts[pathParts.length - 2];
-        localesSet.add(locale);
+    // Получаем путь файла и разделяем его на части
+    const pathParts = file.webkitRelativePath.split('/');
+    // Первый элемент пути - это название папки
+    const folderName = pathParts[0].replace('-out', ''); // Убираем '-out', если есть
+    // Предпоследний элемент пути - это название локали
+    const localeName = pathParts[pathParts.length - 2];
 
-        if (!contentMap[locale]) {
-          contentMap[locale] = {};
-        }
+    try {
+      // Читаем содержимое файла
+      const content = await file.text();
+      // Парсим JSON
+      const jsonData = JSON.parse(content);
 
-        const key = file.name.split('.').slice(0, -1).join('.');
-        contentMap[locale][key] = content;
-
-        resolve();
-      } catch (error) {
-        console.error('Ошибка при разборе JSON:', error);
-        reject(error);
+      // Если папка еще не добавлена в данные, инициализируем ее
+      if (!newFoldersData[folderName]) {
+        newFoldersData[folderName] = {};
       }
-    };
 
-    reader.onerror = (error) => {
-      console.error('Ошибка при чтении файла:', error);
-      reject(error);
-    };
+      // Добавляем данные локали в папку
+      newFoldersData[folderName][localeName] = jsonData;
 
-    reader.readAsText(file);
-  });
+    } catch (error) {
+      console.error(`Ошибка при обработке файла ${file.name}:`, error);
+    }
+  }
 
-  const promises = Array.from(files).filter(file => file.name.endsWith('.json')).map(readFile);
-  await Promise.all(promises);
-
-  setLocales([...localesSet]);
-  setLocalesContent(contentMap);
+  // Обновляем состояние с данными папок
+  setFoldersData(prevFoldersData => ({
+    ...prevFoldersData,
+    ...newFoldersData
+  }));
 };

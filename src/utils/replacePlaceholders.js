@@ -1,13 +1,12 @@
-export function replacePlaceholders(htmlTemplate, localeData) {
+export function replacePlaceholders(htmlTemplate, localeData, folderName) {
+  let resultHtml = htmlTemplate;
+  // Добавлены пробелы внутри плейсхолдера
+  const placeholderPattern = new RegExp(`\\$\\{\\{\\s*${folderName}\\.\\s*([\\w-]+)\\s*\\}\\}\\$`, 'g');
 
-    let resultHtml = htmlTemplate;
-    const placeholderPattern = /\${{(\s*[\w.]+\s*)}}\$/g;
-    resultHtml = resultHtml.replace(placeholderPattern, (match, key) => {
-      key = key.trim();
-      const replacement = localeData[key] || match;
+  resultHtml = resultHtml.replace(placeholderPattern, (match, key) => {
+    const replacement = localeData && localeData[key] ? localeData[key] : match;
+    return replacement;
+  });
 
-      return replacement;
-    });
-
-    return resultHtml;
+  return resultHtml;
 }

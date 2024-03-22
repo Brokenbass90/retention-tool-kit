@@ -1,10 +1,11 @@
 import React from 'react';
 
-const LocaleManager = ({ locales, onLocaleChange }) => {
+
+const LocaleManager = ({ locales, onLocaleSelection }) => {
   return (
     <div className="locale-manager">
       {locales.map(locale => (
-        <button key={locale} onClick={() => onLocaleChange(locale)}>
+        <button key={locale} onClick={() => onLocaleSelection(locale)}>
           {locale}
         </button>
       ))}
