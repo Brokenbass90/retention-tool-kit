@@ -14,17 +14,12 @@ const PdfMaker = ({ html, setHtml }) => {
   const [localHtml, setLocalHtml] = useState(html);
 
   useEffect(() => {
-    // Этот эффект синхронизирует локальное состояние с внешним состоянием html при его изменении
     setLocalHtml(html);
   }, [html]);
 
   const handleCodeChange = (newHtml) => {
     setLocalHtml(newHtml);
-  };
-
-  const handleBlur = () => {
-    // При потере фокуса AceEditor обновляем внешнее состояние
-    setHtml(localHtml);
+    setHtml(newHtml); // Update external state immediately for real-time rendering
   };
 
   const toggleFullscreen = () => {
@@ -49,7 +44,6 @@ const PdfMaker = ({ html, setHtml }) => {
         mode="html"
         theme="monokai"
         onChange={handleCodeChange}
-        onBlur={handleBlur}
         name="UNIQUE_ID_OF_DIV"
         value={localHtml}
         editorProps={{ $blockScrolling: true }}
@@ -63,6 +57,10 @@ const PdfMaker = ({ html, setHtml }) => {
         width="100%"
         height="100%"
       />
+      {/* HTML Preview */}
+      <div className="html-preview">
+        <iframe srcDoc={localHtml} style={{ width: '100%', height: '100%' }} title="Preview"></iframe>
+      </div>
     </div>
   );
 };
