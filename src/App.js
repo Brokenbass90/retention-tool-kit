@@ -63,7 +63,6 @@ const App = () => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      console.log(`"${text}" скопировано в буфер обмена!`);
     }).catch(err => {
       console.error('Ошибка при копировании в буфер обмена: ', err);
     });
