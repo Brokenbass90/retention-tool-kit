@@ -61,6 +61,14 @@ const App = () => {
     setSelectedLocale(null);
   };
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log(`"${text}" скопировано в буфер обмена!`);
+    }).catch(err => {
+      console.error('Ошибка при копировании в буфер обмена: ', err);
+    });
+  };
+
   return (
     <div className="App">
       <div className="top-bar">
@@ -77,7 +85,7 @@ const App = () => {
 
       <div className="folder-bar">
         {Object.keys(foldersData).map(folderName => (
-          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
+          <button key={folderName} onClick={() => { handleFolderSelection(folderName); copyToClipboard(folderName); }} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
             {folderName}
           </button>
         ))}
