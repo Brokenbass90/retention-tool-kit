@@ -1,0 +1,38 @@
+.file-uploader-container {
+    display: inline-block; 
+    margin-right: 8px;
+  }
+  
+  .file-uploader-input {
+    display: none; 
+  }
+  
+  label {
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    cursor: pointer;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .file-uploader-label {
+    display: inline-block;
+    padding: 1px 5px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .file-uploader-label img {
+    width: 24px; 
+    height: auto;
+  }
+  

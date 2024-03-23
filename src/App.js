@@ -16,6 +16,7 @@ const App = () => {
   const [showTxtToJson, setShowTxtToJson] = useState(false);
   const [locales, setLocales] = useState([]);
   const [selectedLocale, setSelectedLocale] = useState(null);
+  const [isOriginalSelected, setIsOriginalSelected] = useState(true);
 
   useEffect(() => {
     setHtml(originalHtml);
@@ -37,10 +38,12 @@ const App = () => {
 
   const handleFolderSelection = (folderName) => {
     setSelectedFolder(folderName);
+    setIsOriginalSelected(false);
   };
 
   const handleLocaleSelection = (locale) => {
     setSelectedLocale(locale);
+    setIsOriginalSelected(false);
     let updatedHtml = originalHtml;
   
     Object.keys(foldersData).forEach(folderName => {
@@ -54,51 +57,47 @@ const App = () => {
 
   const resetLocale = () => {
     setHtml(originalHtml);
+    setIsOriginalSelected(true);
+    setSelectedLocale(null);
   };
 
   return (
     <div className="App">
       <div className="top-bar">
-        <FileUploader onFilesUploaded={handleFilesUploaded} />
-        <button onClick={resetLocale}>Original</button>
+        <div className="file-uploader-container">
+          <FileUploader onFilesUploaded={handleFilesUploaded} />
+        </div>
+        <button className={`original-btn ${isOriginalSelected ? 'selected' : ''}`} onClick={resetLocale}>Original</button>
         {locales.map(locale => (
-          <button key={locale} onClick={() => handleLocaleSelection(locale)} className={selectedLocale === locale ? 'selected' : ''}>
+          <button key={locale} onClick={() => handleLocaleSelection(locale)} className={`locale-btn ${selectedLocale === locale ? 'selected' : ''}`}>
             {locale}
           </button>
         ))}
       </div>
-  
-      {/* Отображение текущей выбранной локали */}
-      {selectedLocale && (
-        <div className="selected-locale">
-          Current Locale: {selectedLocale}
-        </div>
-      )}
-  
+
       <div className="folder-bar">
         {Object.keys(foldersData).map(folderName => (
-          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={selectedFolder === folderName ? 'selected' : ''}>
+          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
             {folderName}
           </button>
         ))}
       </div>
-  
+
       <div className="content-area">
         <PdfMaker html={html} setHtml={setOriginalHtml} />
         <HtmlWindow htmlContent={html} />
       </div>
-  
+
       <div className="buttons-area">
         <ConvertButton html={html} />
         <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
           {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
         </button>
       </div>
-  
+
       {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
     </div>
   );
-  
 };
 
 export default App;
