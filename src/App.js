@@ -17,6 +17,7 @@ const App = () => {
   const [locales, setLocales] = useState([]);
   const [selectedLocale, setSelectedLocale] = useState(null);
   const [isOriginalSelected, setIsOriginalSelected] = useState(true);
+  const [highlightedText, setHighlightedText] = useState(''); // Новое состояние для хранения текста для выделения
 
   useEffect(() => {
     setHtml(originalHtml);
@@ -65,16 +66,14 @@ const App = () => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      // Опционально: сообщение об успешном копировании
     }).catch(err => {
-      console.error('Ошибка при копировании в буфер обмена: ', err);
+      console.error('Error when copying to clipboard: ', err);
     });
   };
 
-  // Добавляем новую функцию для обработки кликов на элементы внутри HtmlWindow
   const onElementClick = (element) => {
-    console.log('Кликнутый элемент:', element);
-    // Здесь будет логика для выделения соответствующего кода в PdfMaker
+    const textToHighlight = element.innerText || element.textContent;
+    setHighlightedText(textToHighlight);
   };
 
   return (
@@ -93,28 +92,28 @@ const App = () => {
 
       <div className="folder-bar">
         {Object.keys(foldersData).map(folderName => (
-                    <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
-                    {folderName}
-                  </button>
-                ))}
-              </div>
-        
-              <div className="content-area">
-                <PdfMaker html={html} setHtml={setOriginalHtml} />
-                <HtmlWindow htmlContent={html} onElementClick={onElementClick} />
-              </div>
-        
-              <div className="buttons-area">
-                <ConvertButton html={html} />
-                <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
-                  {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
-                </button>
-              </div>
-        
-              {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
-            </div>
-          );
-        };
-        
+          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
+            {folderName}
+          </button>
+        ))}
+      </div>
+
+      <div className="content-area">
+      <PdfMaker html={html} setHtml={setOriginalHtml} highlightedText={highlightedText} />
+        <HtmlWindow htmlContent={html} onElementClick={onElementClick} />
+      </div>
+
+      <div className="buttons-area">
+        <ConvertButton html={html} />
+        <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
+          {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
+        </button>
+      </div>
+
+      {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
+    </div>
+  );
+};
+
 export default App;
-        
+
