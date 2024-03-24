@@ -39,7 +39,7 @@ const App = () => {
   const handleFolderSelection = (folderName) => {
     setSelectedFolder(folderName);
     setIsOriginalSelected(false);
-    const formattedText = `$\{\{ ${folderName}.block_00 \}\}$`;
+    const formattedText = `$\{{ ${folderName}.block_00 }}$`;
     copyToClipboard(formattedText);
   };
 
@@ -71,6 +71,12 @@ const App = () => {
     });
   };
 
+  // Добавляем новую функцию для обработки кликов на элементы внутри HtmlWindow
+  const onElementClick = (element) => {
+    console.log('Кликнутый элемент:', element);
+    // Здесь будет логика для выделения соответствующего кода в PdfMaker
+  };
+
   return (
     <div className="App">
       <div className="top-bar">
@@ -87,27 +93,28 @@ const App = () => {
 
       <div className="folder-bar">
         {Object.keys(foldersData).map(folderName => (
-          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
-            {folderName}
-          </button>
-        ))}
-      </div>
-
-      <div className="content-area">
-        <PdfMaker html={html} setHtml={setOriginalHtml} />
-        <HtmlWindow htmlContent={html} />
-      </div>
-
-      <div className="buttons-area">
-        <ConvertButton html={html} />
-        <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
-          {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
-        </button>
-      </div>
-
-      {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
-    </div>
-  );
-};
-
+                    <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
+                    {folderName}
+                  </button>
+                ))}
+              </div>
+        
+              <div className="content-area">
+                <PdfMaker html={html} setHtml={setOriginalHtml} />
+                <HtmlWindow htmlContent={html} onElementClick={onElementClick} />
+              </div>
+        
+              <div className="buttons-area">
+                <ConvertButton html={html} />
+                <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
+                  {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
+                </button>
+              </div>
+        
+              {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
+            </div>
+          );
+        };
+        
 export default App;
+        
