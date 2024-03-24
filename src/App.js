@@ -39,19 +39,21 @@ const App = () => {
   const handleFolderSelection = (folderName) => {
     setSelectedFolder(folderName);
     setIsOriginalSelected(false);
+    const formattedText = `$\{\{ ${folderName}.block_00 \}\}$`;
+    copyToClipboard(formattedText);
   };
 
   const handleLocaleSelection = (locale) => {
     setSelectedLocale(locale);
     setIsOriginalSelected(false);
     let updatedHtml = originalHtml;
-  
+
     Object.keys(foldersData).forEach(folderName => {
       if (foldersData[folderName][locale]) {
         updatedHtml = replacePlaceholders(updatedHtml, foldersData[folderName][locale], folderName);
       }
     });
-  
+
     setHtml(updatedHtml);
   };
 
@@ -63,6 +65,7 @@ const App = () => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
+      // Опционально: сообщение об успешном копировании
     }).catch(err => {
       console.error('Ошибка при копировании в буфер обмена: ', err);
     });
@@ -84,7 +87,7 @@ const App = () => {
 
       <div className="folder-bar">
         {Object.keys(foldersData).map(folderName => (
-          <button key={folderName} onClick={() => { handleFolderSelection(folderName); copyToClipboard(folderName); }} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
+          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
             {folderName}
           </button>
         ))}
