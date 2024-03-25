@@ -11,7 +11,7 @@ const TxtToJson = ({ onClose, isVisible }) => {
     if (files.length > 0) {
       const name = files[0].webkitRelativePath.split('/')[0];
       setFolderName(name);
-      return files; 
+      return files;
     }
     return [];
   };
@@ -24,17 +24,17 @@ const TxtToJson = ({ onClose, isVisible }) => {
   };
 
   const handleDragOver = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
   };
 
   const handleDrop = (e) => {
-    e.preventDefault(); 
-    const files = e.dataTransfer.items;
-    if (files) {
+    e.preventDefault();
+    const items = e.dataTransfer.items;
+    if (items) {
       const directoryFiles = [];
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].webkitGetAsEntry && files[i].webkitGetAsEntry().isDirectory) {
-          const directoryReader = files[i].webkitGetAsEntry().createReader();
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].webkitGetAsEntry && items[i].webkitGetAsEntry().isDirectory) {
+          const directoryReader = items[i].webkitGetAsEntry().createReader();
           directoryReader.readEntries((entries) => {
             entries.forEach((entry) => {
               entry.file((file) => {
@@ -46,7 +46,7 @@ const TxtToJson = ({ onClose, isVisible }) => {
               });
             });
           });
-          break; 
+          break;
         }
       }
     }
@@ -56,9 +56,16 @@ const TxtToJson = ({ onClose, isVisible }) => {
     if (!isConverting && files.length > 0) {
       setIsConverting(true);
       processFiles(files, name)
-        .then(() => {
+        .then(({ warnings, blocksCount }) => {
           setIsConverting(false);
-          onClose(); 
+          if (warnings.length > 0) {
+            alert(`Предупреждения:\n${warnings.join('\n')}`);
+          }
+          const blocksMessage = Object.entries(blocksCount)
+            .map(([locale, count]) => `${locale} - ${count}`)
+            .join('\n');
+          alert(`Количество блоков по локалям:\n${blocksMessage}`);
+          onClose(); // Автоматическое закрытие панели после обработки
         })
         .catch(error => {
           console.error("Conversion error:", error);

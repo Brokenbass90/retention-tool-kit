@@ -8,57 +8,60 @@ export const processFiles = (files, folderName) => {
       return;
     }
 
-    const jsonFileName = prompt("Enter a name for the JSON files:", folderName) || folderName;
-
-    const outputName = jsonFileName.replace(/-out$/, '') + '-out';
+    let warnings = []; 
+    let blocksCount = {}; 
     const zip = new JSZip();
 
-    const fileReadPromises = Array.from(files).map(file => {
+    const processFile = (file) => {
       return new Promise((resolveFile, rejectFile) => {
         const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result;
+          const blocks = content.match(/\{\{(.+?)\}\}/g) || [];
+          const localeRegex = /_(\w{2})_\w{2}_/;
+          const localeMatch = file.name.match(localeRegex);
+          const locale = localeMatch ? localeMatch[1] : 'unknown';
 
-        reader.onload = function(e) {
-          try {
-            const content = e.target.result;
+          blocks.forEach((block, index) => {
 
-            const blocks = content.match(/\{\{(.+?)\}\}/g)?.reduce((acc, block, index) => {
-              const key = `block_${String(index).padStart(2, '0')}`;
-              let value = block.replace(/\{\{|\}\}/g, '').trim();
-              value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
-              acc[key] = value;
-              return acc;
-            }, {});
+            if (!block.includes('{{') || !block.includes('}}')) {
+              warnings.push(`В файле ${file.name} отсутствует символ '${!block.includes('{{') ? '{' : '}' }' в блоке ${index + 1}`);
+            }
+            // Проверка на отсутствие @@
+            if (block.includes('@@') && block.match(/@@/g).length < 2) {
+              warnings.push(`В файле ${file.name} отсутствует символ '@' в блоке ${index + 1}`);
+            }
+          });
 
-            const localeMatch = file.name.match(/_(\w{2})_\w{2}_/);
-            const locale = localeMatch ? localeMatch[1] : 'unknown';
-            const jsonContent = JSON.stringify(blocks ?? {}, null, 4);
+          // Подсчет блоков для текущей локали
+          blocksCount[locale] = (blocksCount[locale] || 0) + blocks.length;
 
-            zip.folder(`${outputName}/${locale}`).file(`${jsonFileName}.json`, jsonContent);
-            resolveFile();
-          } catch (error) {
-            rejectFile(new Error(`Failed to process file ${file.name}: ${error.message}`));
-          }
+          // Формирование JSON объекта из блоков
+          const jsonContent = blocks.reduce((acc, block, index) => {
+            const key = `block_${String(index).padStart(2, '0')}`;
+            let value = block.replace(/\{\{|\}\}/g, '').trim();
+            value = value.replace(/@@(.*?)@@/g, '<p>$1</p>');
+            acc[key] = value;
+            return acc;
+          }, {});
+
+          // Добавление JSON файла в ZIP архив
+          zip.folder(locale).file(`${file.name.replace('.txt', '.json')}`, JSON.stringify(jsonContent, null, 4));
+          resolveFile();
         };
-
-        reader.onerror = () => {
-          rejectFile(new Error(`Failed to read file ${file.name}`));
-        };
-
+        reader.onerror = () => rejectFile(new Error(`Failed to read file ${file.name}`));
         reader.readAsText(file);
       });
-    });
+    };
 
-    Promise.all(fileReadPromises)
-      .then(() => {
-        zip.generateAsync({ type: "blob" })
-          .then(content => {
-            saveAs(content, `${outputName}.zip`);
-            resolve();
-          })
-          .catch(error => {
-            reject(new Error(`Failed to generate zip: ${error.message}`));
-          });
-      })
-      .catch(reject);
+
+    Promise.all(Array.from(files).map(processFile)).then(() => {
+
+      zip.generateAsync({ type: 'blob' }).then((content) => {
+        saveAs(content, `${folderName}-out.zip`);
+   
+        resolve({ warnings, blocksCount });
+      }).catch(error => reject(new Error(`Failed to generate zip: ${error.message}`)));
+    }).catch(reject);
   });
 };
