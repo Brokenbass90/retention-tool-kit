@@ -27,25 +27,22 @@ export const processFiles = (files, folderName) => {
             if (!block.includes('{{') || !block.includes('}}')) {
               warnings.push(`В файле ${file.name} отсутствует символ '${!block.includes('{{') ? '{' : '}' }' в блоке ${index + 1}`);
             }
-            // Проверка на отсутствие @@
             if (block.includes('@@') && block.match(/@@/g).length < 2) {
               warnings.push(`В файле ${file.name} отсутствует символ '@' в блоке ${index + 1}`);
             }
           });
 
-          // Подсчет блоков для текущей локали
           blocksCount[locale] = (blocksCount[locale] || 0) + blocks.length;
 
-          // Формирование JSON объекта из блоков
           const jsonContent = blocks.reduce((acc, block, index) => {
             const key = `block_${String(index).padStart(2, '0')}`;
             let value = block.replace(/\{\{|\}\}/g, '').trim();
-            value = value.replace(/@@(.*?)@@/g, '<p>$1</p>');
+    
+            value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
             acc[key] = value;
             return acc;
-          }, {});
+        }, {});
 
-          // Добавление JSON файла в ZIP архив
           zip.folder(locale).file(`${file.name.replace('.txt', '.json')}`, JSON.stringify(jsonContent, null, 4));
           resolveFile();
         };
