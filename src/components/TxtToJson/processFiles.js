@@ -19,7 +19,7 @@ export const processFiles = (files, folderName) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const content = e.target.result;
-          // Измененное регулярное выражение для учета пустых блоков
+     
           const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
           const localeRegex = /_(\w{2})_\w{2}_/;
           const localeMatch = file.name.match(localeRegex);
@@ -40,7 +40,7 @@ export const processFiles = (files, folderName) => {
             const key = `block_${String(index).padStart(2, '0')}`;
             let value = block.replace(/\{\{|\}\}/g, '').trim();
             value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
-            acc[key] = value || ""; // Учитываем пустые блоки
+            acc[key] = value || ""; 
             return acc;
           }, {});
 

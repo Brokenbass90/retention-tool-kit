@@ -17,7 +17,7 @@ const App = () => {
   const [locales, setLocales] = useState([]);
   const [selectedLocale, setSelectedLocale] = useState(null);
   const [isOriginalSelected, setIsOriginalSelected] = useState(true);
-  const [highlightedText, setHighlightedText] = useState(''); // Новое состояние для хранения текста для выделения
+  const [highlightedText, setHighlightedText] = useState(''); 
 
   useEffect(() => {
     setHtml(originalHtml);
