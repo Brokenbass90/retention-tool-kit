@@ -34,8 +34,13 @@ const App = () => {
   const handleFilesUploaded = async (files) => {
     if (files.length > 0) {
       await processFiles(files, setFoldersData);
+      
+      setSelectedLocale(null);
+      setIsOriginalSelected(true);
+      setHtml(originalHtml);
     }
   };
+  
 
   const handleFolderSelection = (folderName) => {
     setSelectedFolder(folderName);
