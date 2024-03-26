@@ -65,7 +65,7 @@ const TxtToJson = ({ onClose, isVisible }) => {
             .map(([locale, count]) => `${locale} - ${count}`)
             .join('\n');
           alert(`Количество блоков по локалям:\n${blocksMessage}`);
-          onClose(); // Автоматическое закрытие панели после обработки
+          onClose(); 
         })
         .catch(error => {
           console.error("Conversion error:", error);

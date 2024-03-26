@@ -8,26 +8,28 @@ export const processFiles = (files, folderName) => {
       return;
     }
 
-    let warnings = []; 
-    let blocksCount = {}; 
+    let warnings = [];
+    let blocksCount = {};
     const zip = new JSZip();
+
+    const jsonFileName = prompt("Enter a name for the JSON files:", folderName) || folderName;
 
     const processFile = (file) => {
       return new Promise((resolveFile, rejectFile) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const content = e.target.result;
-          const blocks = content.match(/\{\{(.+?)\}\}/g) || [];
+          // Измененное регулярное выражение для учета пустых блоков
+          const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
           const localeRegex = /_(\w{2})_\w{2}_/;
           const localeMatch = file.name.match(localeRegex);
           const locale = localeMatch ? localeMatch[1] : 'unknown';
 
           blocks.forEach((block, index) => {
-
-            if (!block.includes('{{') || !block.includes('}}')) {
-              warnings.push(`В файле ${file.name} отсутствует символ '${!block.includes('{{') ? '{' : '}' }' в блоке ${index + 1}`);
+            if (!block.startsWith('{{') || !block.endsWith('}}')) {
+              warnings.push(`В файле ${file.name} отсутствует символ '${block.startsWith('{{') ? '}' : '{' }' в блоке ${index + 1}`);
             }
-            if (block.includes('@@') && block.match(/@@/g).length < 2) {
+            if (block.includes('@@') && block.match(/@@/g).length % 2 !== 0) {
               warnings.push(`В файле ${file.name} отсутствует символ '@' в блоке ${index + 1}`);
             }
           });
@@ -37,13 +39,12 @@ export const processFiles = (files, folderName) => {
           const jsonContent = blocks.reduce((acc, block, index) => {
             const key = `block_${String(index).padStart(2, '0')}`;
             let value = block.replace(/\{\{|\}\}/g, '').trim();
-    
             value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
-            acc[key] = value;
+            acc[key] = value || ""; // Учитываем пустые блоки
             return acc;
-        }, {});
+          }, {});
 
-          zip.folder(locale).file(`${file.name.replace('.txt', '.json')}`, JSON.stringify(jsonContent, null, 4));
+          zip.folder(locale).file(`${jsonFileName}.json`, JSON.stringify(jsonContent, null, 4));
           resolveFile();
         };
         reader.onerror = () => rejectFile(new Error(`Failed to read file ${file.name}`));
@@ -51,12 +52,9 @@ export const processFiles = (files, folderName) => {
       });
     };
 
-
     Promise.all(Array.from(files).map(processFile)).then(() => {
-
       zip.generateAsync({ type: 'blob' }).then((content) => {
         saveAs(content, `${folderName}-out.zip`);
-   
         resolve({ warnings, blocksCount });
       }).catch(error => reject(new Error(`Failed to generate zip: ${error.message}`)));
     }).catch(reject);
