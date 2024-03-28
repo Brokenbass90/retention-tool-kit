@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(express.static('build'));
-// Увеличиваем лимит размера тела запроса
+
 app.use(express.text({ type: 'text/html', limit: '50mb' }));
 
 app.post('/generate-pdf', async (req, res) => {

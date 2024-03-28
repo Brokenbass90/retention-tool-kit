@@ -64,11 +64,6 @@
     cursor: pointer;
   }
   
-  .locale-btn.selected {
-    background-color: #e0e0e0;
-    font-weight: bold; 
-  }
-
   .folder-btn, .folder-btn.selected {
     margin-right: 8px;
     padding: 8px 16px;
@@ -77,15 +72,13 @@
     background-color: #ffffff;
     cursor: pointer;
   }
-  
+
   .original-btn.selected, .locale-btn.selected {
     background-color: #e0e0e0;
-    font-weight: bold;
   }
 
   .folder-btn.selected {
     background-color: #e0e0e0;
-    font-weight: bold;
   }
   
   .folder-btn img {

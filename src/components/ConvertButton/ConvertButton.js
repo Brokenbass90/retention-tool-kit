@@ -5,6 +5,7 @@ const ConvertButton = ({ html }) => {
   const [isConverting, setIsConverting] = useState(false); 
 
   const handleConvertToPDF = async () => {
+
     setIsConverting(true); 
     try {
       const response = await fetch('/generate-pdf', {

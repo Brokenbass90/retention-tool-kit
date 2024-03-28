@@ -11,17 +11,30 @@ import './App.css';
 const App = () => {
   const [originalHtml, setOriginalHtml] = useState('');
   const [html, setHtml] = useState('');
+  const [htmlByLocale, setHtmlByLocale] = useState({});
   const [foldersData, setFoldersData] = useState({});
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const [showTxtToJson, setShowTxtToJson] = useState(false);
   const [locales, setLocales] = useState([]);
-  const [selectedLocale, setSelectedLocale] = useState(null);
+  const [selectedLocale, setSelectedLocale] = useState('');
   const [isOriginalSelected, setIsOriginalSelected] = useState(true);
-  const [highlightedText, setHighlightedText] = useState(''); 
+  const [highlightedText, setHighlightedText] = useState('');
+  const [showTxtToJson, setShowTxtToJson] = useState(false);
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Text successfully copied');
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+  };
 
   useEffect(() => {
-    setHtml(originalHtml);
-  }, [originalHtml]);
+    if (isOriginalSelected) {
+      setHtml(originalHtml);
+    } else if (selectedLocale && htmlByLocale[selectedLocale]) {
+      setHtml(htmlByLocale[selectedLocale]);
+    }
+  }, [originalHtml, isOriginalSelected, selectedLocale, htmlByLocale]);
 
   useEffect(() => {
     const allLocales = new Set();
@@ -34,90 +47,88 @@ const App = () => {
   const handleFilesUploaded = async (files) => {
     if (files.length > 0) {
       await processFiles(files, setFoldersData);
-      
-      setSelectedLocale(null);
       setIsOriginalSelected(true);
-      setHtml(originalHtml);
     }
   };
-  
 
   const handleFolderSelection = (folderName) => {
     setSelectedFolder(folderName);
     setIsOriginalSelected(false);
-    const formattedText = `$\{{ ${folderName}.block_00 }}$`;
-    copyToClipboard(formattedText);
+    const placeholderText = `$\{{ ${folderName}.block_00 }}$`;
+    copyToClipboard(placeholderText);
   };
 
   const handleLocaleSelection = (locale) => {
     setSelectedLocale(locale);
     setIsOriginalSelected(false);
-    let updatedHtml = originalHtml;
 
-    Object.keys(foldersData).forEach(folderName => {
-      if (foldersData[folderName][locale]) {
-        updatedHtml = replacePlaceholders(updatedHtml, foldersData[folderName][locale], folderName);
-      }
-    });
-
+    let updatedHtml = htmlByLocale[locale] || originalHtml;
+    if (!htmlByLocale[locale]) {
+      Object.keys(foldersData).forEach(folderName => {
+        if (foldersData[folderName][locale]) {
+          updatedHtml = replacePlaceholders(updatedHtml, foldersData[folderName][locale], folderName);
+        }
+      });
+      setHtmlByLocale(prev => ({ ...prev, [locale]: updatedHtml }));
+    }
     setHtml(updatedHtml);
   };
 
   const resetLocale = () => {
-    setHtml(originalHtml);
     setIsOriginalSelected(true);
-    setSelectedLocale(null);
-  };
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
-    }).catch(err => {
-      console.error('Error when copying to clipboard: ', err);
-    });
+    setSelectedLocale('');
+    setHtml(originalHtml);
   };
 
   const onElementClick = (element) => {
     const textToHighlight = element.innerText || element.textContent;
     setHighlightedText(textToHighlight);
   };
-
+  
   return (
     <div className="App">
-      <div className="top-bar">
-        <div className="file-uploader-container">
-          <FileUploader onFilesUploaded={handleFilesUploaded} />
-        </div>
-        <button className={`original-btn ${isOriginalSelected ? 'selected' : ''}`} onClick={resetLocale}>Original</button>
-        {locales.map(locale => (
-          <button key={locale} onClick={() => handleLocaleSelection(locale)} className={`locale-btn ${selectedLocale === locale ? 'selected' : ''}`}>
-            {locale}
-          </button>
-        ))}
+    <div className="top-bar">
+      <div className="file-uploader-container">
+        <FileUploader onFilesUploaded={handleFilesUploaded} />
       </div>
+      <button className={`original-btn ${isOriginalSelected ? 'selected' : ''}`} onClick={resetLocale}>Original</button>
+      {locales.map((locale) => (
+        <button key={locale} onClick={() => handleLocaleSelection(locale)} className={`locale-btn ${selectedLocale === locale ? 'selected' : ''}`}>
+          {locale}
+        </button>
+      ))}
+    </div>
 
-      <div className="folder-bar">
-        {Object.keys(foldersData).map(folderName => (
-          <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
-            {folderName}
-          </button>
-        ))}
-      </div>
+    <div className="folder-bar">
+      {Object.keys(foldersData).map((folderName) => (
+        <button key={folderName} onClick={() => handleFolderSelection(folderName)} className={`folder-btn ${selectedFolder === folderName ? 'selected' : ''}`}>
+          {folderName}
+        </button>
+      ))}
+    </div>
 
-      <div className="content-area">
-      <PdfMaker html={html} setHtml={setOriginalHtml} highlightedText={highlightedText} />
-        <HtmlWindow htmlContent={html} onElementClick={onElementClick} />
-      </div>
+    <div className="content-area">
+      <PdfMaker html={html} setHtml={newHtml => {
+        if (!isOriginalSelected && selectedLocale) {
+          setHtmlByLocale(prev => ({ ...prev, [selectedLocale]: newHtml }));
+        } else {
+          setOriginalHtml(newHtml);
+        }
+        setHtml(newHtml);
+      }} highlightedText={highlightedText} />
+      <HtmlWindow htmlContent={html} onElementClick={onElementClick} />
+    </div>
 
-      <div className="buttons-area">
+    <div className="buttons-area">
         <ConvertButton html={html} />
         <button className="convert-button txt-to-json-toggle" onClick={() => setShowTxtToJson(!showTxtToJson)}>
           {showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
         </button>
       </div>
 
-      {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
-    </div>
-  );
+    {showTxtToJson && <TxtToJson onClose={() => setShowTxtToJson(false)} isVisible={showTxtToJson} />}
+  </div>
+);
 };
 
 export default App;
