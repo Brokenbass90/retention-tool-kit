@@ -1,53 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { observer } from 'mobx-react-lite';
 import AceEditor from 'react-ace';
+import { autorun } from 'mobx';
+import { appStore } from '../../stores/AppStore';
 import './PdfMaker.css';
 import { FaCompress, FaExchangeAlt, FaArrowsAlt } from 'react-icons/fa';
-
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/snippets/html';
 
-const PdfMaker = ({ html, setHtml, highlightedText }) => {
+const PdfMaker = observer(() => {
   const [wrapEnabled, setWrapEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localHtml, setLocalHtml] = useState(html);
   const editorRef = useRef(null);
 
   useEffect(() => {
-    setLocalHtml(html);
-  }, [html]);
+    const disposer = autorun(() => {
+      const editor = editorRef.current?.editor;
+      if (editor && appStore.highlightedText) {
+        const found = editor.find(appStore.highlightedText, {
+          wrap: true,
+          caseSensitive: false,
+          wholeWord: false,
+          regExp: false,
+        });
 
-  useEffect(() => {
-    const editor = editorRef.current?.editor;
-    if (editor && highlightedText) {
-      const session = editor.getSession();
-
-      if (typeof session.removeAllMarkers === 'function') {
-        session.removeAllMarkers();
+        if (found) {
+          editor.scrollToLine(found.start.row, true, true, () => {});
+          editor.focus();
+        }
       }
+    });
 
-      editor.find(highlightedText, {
-        wrap: true,
-        caseSensitive: false,
-        wholeWord: false,
-        regExp: false,
-      });
-
-      const selectionRange = editor.getSelectionRange();
-      if (selectionRange && typeof session.addMarker === 'function') {
-        session.addMarker(selectionRange, "highlighted-code", "text");
-      }
-
-      editor.scrollToLine(selectionRange.start.row, true, true, function () {});
-
-      editor.focus();
-    }
-  }, [highlightedText]);
+    return () => disposer();
+  }, [appStore.highlightedText]);
 
   const handleCodeChange = (newHtml) => {
-    setLocalHtml(newHtml);
-    setHtml(newHtml);
+    appStore.setOriginalHtml(newHtml);
   };
 
   const toggleFullscreen = () => {
@@ -55,14 +45,14 @@ const PdfMaker = ({ html, setHtml, highlightedText }) => {
   };
 
   const toggleWrap = () => {
-    setWrapEnabled(!wrapEnabled); 
+    setWrapEnabled(!wrapEnabled);
   };
 
   return (
     <div className={`pdf-maker ${isFullscreen ? 'fullscreen' : ''}`}>
       <div className="toolbar">
         <button onClick={toggleWrap} className="toolbar-button"><FaExchangeAlt /></button>
-        <button className="fullscreen-button" onClick={toggleFullscreen}>{isFullscreen ? <FaCompress /> : <FaArrowsAlt />}</button>
+        <button onClick={toggleFullscreen} className="fullscreen-button">{isFullscreen ? <FaCompress /> : <FaArrowsAlt />}</button>
       </div>
       <AceEditor
         ref={editorRef}
@@ -70,7 +60,7 @@ const PdfMaker = ({ html, setHtml, highlightedText }) => {
         theme="monokai"
         onChange={handleCodeChange}
         name="UNIQUE_ID_OF_DIV"
-        value={localHtml}
+        value={appStore.html}
         editorProps={{ $blockScrolling: true }}
         setOptions={{
           enableBasicAutocompletion: true,
@@ -84,6 +74,6 @@ const PdfMaker = ({ html, setHtml, highlightedText }) => {
       />
     </div>
   );
-};
+});
 
 export default PdfMaker;
