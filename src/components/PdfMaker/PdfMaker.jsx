@@ -15,6 +15,17 @@ const PdfMaker = observer(() => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const editorRef = useRef(null);
 
+  // /костыль, потом поправить
+  useEffect(() => {
+    const loadAndSetup = async () => {
+      await appStore.loadInitialData();
+      appStore.resetLocale();
+    };
+  
+    loadAndSetup();
+  }, []);
+  // /костыль, потом поправить
+
   useEffect(() => {
     const disposer = autorun(() => {
       const editor = editorRef.current?.editor;
@@ -34,18 +45,21 @@ const PdfMaker = observer(() => {
     });
 
     return () => disposer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appStore.highlightedText]);
 
   const handleCodeChange = (newHtml) => {
-    appStore.setOriginalHtml(newHtml);
+    if (newHtml !== appStore.html) {
+      appStore.setOriginalHtml(newHtml);
+    }
   };
 
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
+    setIsFullscreen(prevState => !prevState);
   };
 
   const toggleWrap = () => {
-    setWrapEnabled(!wrapEnabled);
+    setWrapEnabled(prevState => !prevState);
   };
 
   return (

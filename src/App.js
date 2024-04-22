@@ -30,9 +30,14 @@ const App = observer(() => {
       </div>
       <div className="folder-bar">
         {Object.keys(appStore.foldersData).map((folderName) => (
-          <button key={folderName} onClick={() => appStore.handleFolderSelection(folderName)} className={`folder-btn ${appStore.selectedFolder === folderName ? 'selected' : ''}`}>
-            {folderName}
-          </button>
+          <div key={folderName} className="folder-entry">
+            <button onClick={() => appStore.handleFolderSelection(folderName)} className={`folder-btn ${appStore.selectedFolder === folderName ? 'selected' : ''}`}>
+              {folderName}
+            </button>
+            <button onClick={() => appStore.deleteFolder(folderName)} className="delete-button folder-btn">
+              ✖
+            </button>
+          </div>
         ))}
       </div>
       <div className="content-area">
