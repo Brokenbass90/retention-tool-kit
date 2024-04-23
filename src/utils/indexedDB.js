@@ -5,7 +5,6 @@ const STORE_NAME = 'settings';
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-
     request.onerror = (event) => {
       console.error('Database error:', request.error);
       reject(request.error);
@@ -21,24 +20,6 @@ function openDB() {
     request.onsuccess = (event) => {
       resolve(event.target.result);
     };
-  });
-}
-export async function deleteFolderSettings(folderName) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.delete(folderName); // Убедитесь, что folderName правильно определён в вашем IndexedDB
-
-      request.onerror = (event) => {
-          console.error('Error deleting folder:', request.error);
-          reject(request.error);
-      };
-
-      request.onsuccess = (event) => {
-          console.log('Deleted folder:', folderName);
-          resolve(request.result);
-      };
   });
 }
 
@@ -59,58 +40,60 @@ function prepareDataForStorage(data) {
   return cleanedData;
 }
 
-export async function getSettings() {
+export async function getSettings(folderId = 'mySettings') {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORE_NAME], 'readonly');
     const store = transaction.objectStore(STORE_NAME);
-    const request = store.get('mySettings');
-
+    const request = store.get(folderId);
     request.onerror = (event) => {
       console.error('Error fetching data:', request.error);
       reject(request.error);
     };
-
     request.onsuccess = (event) => {
       resolve(request.result);
     };
   });
 }
 
-export async function saveSettings(data) {
+export async function saveSettings(data, folderId = 'defaultFolder') {
+  if (!folderId) {
+      console.error("Folder ID is undefined or invalid");
+      return;
+  }
+
   const db = await openDB();
   const cleanData = prepareDataForStorage(data);
 
-
-
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([STORE_NAME], 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.put({ ...cleanData, id: 'mySettings' });
+      const transaction = db.transaction([STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      // Обеспечение наличия id в данных, отправляемых в базу данных
+      const request = store.put({ ...cleanData, id: folderId });
 
-    request.onerror = (event) => {
-      console.error('Error saving data:', request.error);
-      reject(request.error);
-    };
+      request.onerror = (event) => {
+          console.error('Error saving data:', request.error);
+          reject(request.error);
+      };
 
-    request.onsuccess = (event) => {
-      resolve(request.result);
-    };
+      request.onsuccess = (event) => {
+
+          resolve(request.result);
+      };
   });
 }
 
-export async function deleteSettings() {
+
+export async function deleteSettings(folderId) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORE_NAME], 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
-    const request = store.delete('mySettings');
-
+    const request = store.delete(folderId);
     request.onerror = (event) => {
       console.error('Error deleting data:', request.error);
       reject(request.error);
     };
-
     request.onsuccess = (event) => {
       resolve(request.result);
     };
