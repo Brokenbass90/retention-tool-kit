@@ -49,3 +49,4 @@ const HtmlWindow = ({ htmlContent, onElementClick }) => {
 };
 
 export default HtmlWindow;
+

@@ -32,3 +32,4 @@ const FileUploader = ({ onFilesUploaded }) => {
 };
 
 export default FileUploader;
+

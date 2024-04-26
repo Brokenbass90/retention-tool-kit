@@ -12,6 +12,10 @@ export const processFiles = (files, folderName) => {
     let blocksCount = {};
     const zip = new JSZip();
 
+    // Улучшенное определение локали
+    // const localeRegex = /_?([a-z]{2}(-[A-Z]{2})?)[_\.]/;
+    const localeRegex = /_?([a-z]{2}(-[A-Z]{2})?)[_.]/;
+
     const jsonFileName = prompt("Enter a name for the JSON files:", folderName) || folderName;
 
     const processFile = (file) => {
@@ -19,18 +23,18 @@ export const processFiles = (files, folderName) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const content = e.target.result;
-     
           const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
-          const localeRegex = /_(\w{2})_\w{2}_/;
           const localeMatch = file.name.match(localeRegex);
           const locale = localeMatch ? localeMatch[1] : 'unknown';
 
           blocks.forEach((block, index) => {
             if (!block.startsWith('{{') || !block.endsWith('}}')) {
-              warnings.push(`В файле ${file.name} отсутствует символ '${block.startsWith('{{') ? '}' : '{' }' в блоке ${index + 1}`);
+              warnings.push(`Missing '{{' or '}}' in file ${file.name} at block ${index + 1}`);
+              return; // Пропускаем этот блок
             }
             if (block.includes('@@') && block.match(/@@/g).length % 2 !== 0) {
-              warnings.push(`В файле ${file.name} отсутствует символ '@' в блоке ${index + 1}`);
+              warnings.push(`Missing '@' in file ${file.name} at block ${index + 1}`);
+              return; 
             }
           });
 
@@ -38,9 +42,12 @@ export const processFiles = (files, folderName) => {
 
           const jsonContent = blocks.reduce((acc, block, index) => {
             const key = `block_${String(index).padStart(2, '0')}`;
-            let value = block.replace(/\{\{|\}\}/g, '').trim();
-            value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
-            acc[key] = value || ""; 
+            if (block === '{{}}') {
+              acc[key] = " "; // Вставляем пробел для пустых блоков
+            } else {
+              let value = block.replace(/\{\{|\}\}/g, '').trim().replace(/@@(.*?)@@/g, '<b>$1</b>');
+              acc[key] = value || " "; // Заменяем пустое значение на пробел
+            }
             return acc;
           }, {});
 

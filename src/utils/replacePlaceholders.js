@@ -9,3 +9,4 @@ export function replacePlaceholders(htmlTemplate, localeData, folderName) {
 
   return resultHtml;
 }
+

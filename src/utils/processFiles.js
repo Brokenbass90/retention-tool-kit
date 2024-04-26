@@ -24,3 +24,4 @@ export async function processFiles(files) {
   }
   return newFoldersData;
 }
+
