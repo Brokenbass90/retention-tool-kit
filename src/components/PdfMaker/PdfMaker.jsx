@@ -4,7 +4,7 @@ import AceEditor from 'react-ace';
 import { autorun } from 'mobx';
 import { appStore } from '../../stores/AppStore';
 import './PdfMaker.css';
-import { FaCompress, FaExchangeAlt, FaArrowsAlt } from 'react-icons/fa';
+import { FaCompress, FaExchangeAlt, FaArrowsAlt, FaCopy } from 'react-icons/fa'; // Добавлен FaCopy
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -13,9 +13,9 @@ import 'ace-builds/src-noconflict/snippets/html';
 const PdfMaker = observer(() => {
   const [wrapEnabled, setWrapEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
   const editorRef = useRef(null);
 
-  // /костыль, потом поправить
   useEffect(() => {
     const loadAndSetup = async () => {
       await appStore.loadInitialData();
@@ -24,7 +24,6 @@ const PdfMaker = observer(() => {
   
     loadAndSetup();
   }, []);
-  // /костыль, потом поправить
 
   useEffect(() => {
     const disposer = autorun(() => {
@@ -62,11 +61,27 @@ const PdfMaker = observer(() => {
     setWrapEnabled(prevState => !prevState);
   };
 
+  const copyToClipboard = () => {
+    const editor = editorRef.current?.editor;
+    if (editor) {
+      const text = editor.getValue();
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          setIsCopying(true);
+          setTimeout(() => setIsCopying(false), 1000); // Подсветка кнопки на 1 секунду
+        })
+        .catch(() => {
+          setIsCopying(false);
+        });
+    }
+  };
+
   return (
     <div className={`pdf-maker ${isFullscreen ? 'fullscreen' : ''}`}>
       <div className="toolbar">
         <button onClick={toggleWrap} className="toolbar-button"><FaExchangeAlt /></button>
         <button onClick={toggleFullscreen} className="fullscreen-button">{isFullscreen ? <FaCompress /> : <FaArrowsAlt />}</button>
+        <button onClick={copyToClipboard} className={`copy-button ${isCopying ? 'copying' : ''}`}><FaCopy /></button> {/* Кнопка копирования с классом индикации */}
       </div>
       <AceEditor
         ref={editorRef}
@@ -91,4 +106,3 @@ const PdfMaker = observer(() => {
 });
 
 export default PdfMaker;
-

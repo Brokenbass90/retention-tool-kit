@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { replacePlaceholders } from '../utils/replacePlaceholders';
-import { processFiles } from '../utils/processFiles';
 import { saveSettings, getSettings, deleteSettings } from '../utils/indexedDB'; 
 
 class AppStore {
@@ -8,7 +7,7 @@ class AppStore {
   html = '';
   htmlByLocale = {};
   foldersData = {};
-  selectedFolder = 'defaultFolder'; 
+  selectedFolder = 'defaultFolder';
   locales = [];
   selectedLocale = '';
   isOriginalSelected = true;
@@ -32,7 +31,7 @@ class AppStore {
       this.originalHtml = data.html || '';
       this.foldersData = data.foldersData || {};
       this.updateLocales();
-      this.selectedFolder = data.selectedFolder || this.selectedFolder; 
+      this.selectedFolder = data.selectedFolder || this.selectedFolder;
       this.selectedLocale = data.selectedLocale;
       this.isOriginalSelected = data.isOriginalSelected;
       this.highlightedText = data.highlightedText;
@@ -40,7 +39,6 @@ class AppStore {
   }
 
   async saveAllData() {
-  
     if (!this.selectedFolder) {
       console.error('Selected folder is undefined or invalid');
       return;
@@ -51,18 +49,17 @@ class AppStore {
       selectedLocale: this.selectedLocale,
       isOriginalSelected: this.isOriginalSelected,
       highlightedText: this.highlightedText
-    }, this.selectedFolder); 
+    }, this.selectedFolder);
   }
 
   async deleteFolder(folderName) {
     if (this.foldersData[folderName]) {
       delete this.foldersData[folderName];
-      await deleteSettings(folderName); 
+      await deleteSettings(folderName);
       this.updateLocales();
-      this.saveAllData(); 
+      this.saveAllData();
     }
   }
-  
 
   setOriginalHtml(html) {
     runInAction(() => {
@@ -73,8 +70,7 @@ class AppStore {
     });
   }
 
-  async handleFilesUploaded(files) {
-    const newFoldersData = await processFiles(files);
+  async handleFilesUploaded(newFoldersData) {
     runInAction(() => {
       this.foldersData = { ...this.foldersData, ...newFoldersData };
       this.updateLocales();
@@ -93,29 +89,37 @@ class AppStore {
       this.locales = Array.from(allLocales);
     });
   }
+  async copyToClipboardWithIndication(text, setButtonColor) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setButtonColor('#62d59075');
+      setTimeout(() => setButtonColor(''), 700);
+    } catch (err) {
+      setButtonColor('#f826268c');
+      setTimeout(() => setButtonColor(''), 700);
+      console.error('Failed to copy text: ', err);
+    }
+  }
 
+  handleFolderSelection(folderName, setButtonColor) {
+    if (!folderName) {
+      console.error('Attempted to select an undefined or invalid folder');
+      return;
+    }
+    runInAction(() => {
+      const text = `$\{{ ${folderName}.block_00 }}$`;
+      this.copyToClipboardWithIndication(text, setButtonColor);
+    });
+  }
   // handleFolderSelection(folderName) {
   //   if (!folderName) {
   //     console.error('Attempted to select an undefined or invalid folder');
   //     return;
   //   }
   //   runInAction(() => {
-  //     this.selectedFolder = folderName;
-  //     this.isOriginalSelected = false;
   //     this.copyToClipboard(`$\{{ ${folderName}.block_00 }}$`);
-  //     this.updateHtmlForAllLocales();
   //   });
   // }
-  handleFolderSelection(folderName) {
-    if (!folderName) {
-      console.error('Attempted to select an undefined or invalid folder');
-      return;
-    }
-    runInAction(() => {
-      // Только копирование в буфер обмена, без изменения выбранной папки или локализации
-      this.copyToClipboard(`$\{{ ${folderName}.block_00 }}$`);
-    });
-  }
 
   handleLocaleSelection(locale) {
     runInAction(() => {
@@ -177,4 +181,3 @@ class AppStore {
 }
 
 export const appStore = new AppStore();
-

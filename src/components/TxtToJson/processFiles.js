@@ -12,8 +12,6 @@ export const processFiles = (files, folderName) => {
     let blocksCount = {};
     const zip = new JSZip();
 
-    // Улучшенное определение локали
-    // const localeRegex = /_?([a-z]{2}(-[A-Z]{2})?)[_\.]/;
     const localeRegex = /_?([a-z]{2}(-[A-Z]{2})?)[_.]/;
 
     const jsonFileName = prompt("Enter a name for the JSON files:", folderName) || folderName;
@@ -46,7 +44,7 @@ export const processFiles = (files, folderName) => {
               acc[key] = " "; // Вставляем пробел для пустых блоков
             } else {
               let value = block.replace(/\{\{|\}\}/g, '').trim().replace(/@@(.*?)@@/g, '<b>$1</b>');
-              acc[key] = value || " "; // Заменяем пустое значение на пробел
+              acc[key] = value || " "; 
             }
             return acc;
           }, {});

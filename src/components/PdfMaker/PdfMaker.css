@@ -23,7 +23,7 @@
   padding: 10px 10px 0 0;
 }
 
-.toolbar-button,  .fullscreen-button {
+.toolbar-button, .fullscreen-button, .copy-button {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 50%;
@@ -38,14 +38,17 @@
   opacity: 20%;
 }
 
-.toolbar-button:hover, .fullscreen-button:hover {
+.toolbar-button:hover, .fullscreen-button:hover, .copy-button:hover {
   opacity: 100%;
 }
 
-
-.toolbar-button svg, .expand-button svg, .fullscreen-button svg {
+.toolbar-button svg, .fullscreen-button svg, .copy-button svg {
   width: 15px;
   height: 15px;
+}
+
+.copy-button.copying {
+  background-color: #62d59075;
 }
 
 @media (max-width: 768px) {
@@ -54,4 +57,3 @@
     height: 100%;
   }
 }
-
