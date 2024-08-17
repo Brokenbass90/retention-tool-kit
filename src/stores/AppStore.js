@@ -181,7 +181,6 @@
 // }
 
 // export const appStore = new AppStore();
-
 import { makeAutoObservable, runInAction } from "mobx";
 import { replacePlaceholders } from '../utils/replacePlaceholders';
 import { saveSettings, getSettings, deleteSettings } from '../utils/indexedDB'; 
@@ -376,11 +375,13 @@ class AppStore {
       console.error('Failed to copy text: ', err);
     });
   }
+
   addLocaleManually({ locale, keyName, content }) {
     const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
     const jsonContent = blocks.reduce((acc, block, index) => {
       const key = `block_${String(index).padStart(2, '0')}`;
       let value = block.replace(/\{\{|\}\}/g, '').trim();
+      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>'); // Сохраняем преобразование @@ в <b>
       acc[key] = value || " ";
       return acc;
     }, {});
@@ -396,13 +397,12 @@ class AppStore {
     });
   }
 
-// -----------
-
   updateLocale({ locale, keyName, content }) {
     const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
     const jsonContent = blocks.reduce((acc, block, index) => {
       const key = `block_${String(index).padStart(2, '0')}`;
       let value = block.replace(/\{\{|\}\}/g, '').trim();
+      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>'); // Сохраняем преобразование @@ в <b>
       acc[key] = value || " ";
       return acc;
     }, {});
@@ -429,7 +429,6 @@ class AppStore {
     }
     return data;
   }
-  
 }
 
 export const appStore = new AppStore();
