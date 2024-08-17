@@ -7,9 +7,12 @@ import TxtToJson from './components/TxtToJson/TxtToJson.jsx';
 import FileUploader from './components/FileUploader/FileUploader.jsx';
 import { appStore } from './stores/AppStore';
 import './App.css';
+import AddLocaleModal from './components/AddLocaleModal/AddLocaleModal';
+
 
 const App = observer(() => {
   const [buttonColors, setButtonColors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function onElementClick(text) {
     if (text) {
@@ -24,6 +27,18 @@ const App = observer(() => {
     appStore.handleFolderSelection(folderName, setButtonColor);
   }
   
+  function openAddLocaleModal() {
+    setIsModalOpen(true);
+  }
+
+  function closeAddLocaleModal() {
+    setIsModalOpen(false);
+  }
+
+  function handleSaveLocale(data) {
+    appStore.addLocaleManually(data);
+  }
+  
   return (
     <div className="App">
       <div className="top-bar">
@@ -36,6 +51,9 @@ const App = observer(() => {
             {locale}
           </button>
         ))}
+
+        <button className="original-btn" onClick={openAddLocaleModal}>+</button>
+        
       </div>
       <div className="folder-bar">
         {Object.keys(appStore.foldersData).map((folderName) => (
@@ -64,6 +82,7 @@ const App = observer(() => {
         </button>
       </div>
       {appStore.showTxtToJson && <TxtToJson onClose={appStore.toggleTxtToJson} isVisible={appStore.showTxtToJson} />}
+      {isModalOpen && <AddLocaleModal onClose={closeAddLocaleModal} onSave={handleSaveLocale} />}
     </div>
   );
 });
