@@ -148,3 +148,16 @@
   background-color: #e0e0e0;
   transition: background-color 150ms; 
 }
+
+.BrandConfiguratorButton {
+  position: absolute;
+  right: 30px;
+  top: 0;
+  z-index: 1001;
+  background: #1890ff;
+  border-color: #1890ff;
+  color: #fff;
+  padding: 4px 15px;
+  border-radius: 2px;
+  cursor: pointer;
+}

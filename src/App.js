@@ -89,7 +89,6 @@
 
 // export default App;
 
-
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import PdfMaker from './components/PdfMaker/PdfMaker.jsx';
@@ -101,12 +100,12 @@ import { appStore } from './stores/AppStore';
 import './App.css';
 import AddLocaleModal from './components/AddLocaleModal/AddLocaleModal';
 import EditLocaleModal from './components/EditLocaleModal/EditLocaleModal';
-
-
+import BrandConfigurator from './components/BrandConfigurator/BrandConfigurator';
 
 const App = observer(() => {
   const [buttonColors, setButtonColors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false); // Добавлено
 
   function onElementClick(text) {
     if (text) {
@@ -135,13 +134,26 @@ const App = observer(() => {
   
   return (
     <div className="App">
-    {appStore.editLocaleModalVisible && (
-      <EditLocaleModal
-        locale={appStore.localeToEdit}
-        onClose={() => appStore.closeEditLocaleModal()}
-        onSave={(data) => appStore.saveEditedLocale(data)}
+      <button className='BrandConfiguratorButton' onClick={() => setIsConfiguratorOpen(!isConfiguratorOpen)}>
+        {isConfiguratorOpen ? '↑' : '↓'}
+      </button>
+
+      <BrandConfigurator
+        isOpen={isConfiguratorOpen}
+        onSave={(config) => {
+          console.log('Brand Config Saved:', config);
+          setIsConfiguratorOpen(false);
+        }}
+        onCancel={() => setIsConfiguratorOpen(false)}
       />
-    )}
+      
+      {appStore.editLocaleModalVisible && (
+        <EditLocaleModal
+          locale={appStore.localeToEdit}
+          onClose={() => appStore.closeEditLocaleModal()}
+          onSave={(data) => appStore.saveEditedLocale(data)}
+        />
+      )}
 
       <div className="top-bar">
         <div className="file-uploader-container">
@@ -165,10 +177,7 @@ const App = observer(() => {
             </div>
           ))}
 
-
-
         <button className="original-btn" onClick={openAddLocaleModal}>+</button>
-        
       </div>
       <div className="folder-bar">
         {Object.keys(appStore.foldersData).map((folderName) => (
