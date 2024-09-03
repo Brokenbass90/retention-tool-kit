@@ -1,17 +1,20 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
 const request = require('request');
 const app = express();
 const port = process.env.PORT || 3001;
 
+const brandsFilePath = path.join(__dirname, 'brands.json');
+
 app.use(express.static('build'));
+app.use(express.json());
 app.use(express.text({ type: 'text/html', limit: '50mb' }));
 
-
 app.use((req, res, next) => {
-  const regex = /%7B|%7D|{{|}}/; 
+  const regex = /%7B|%7D|{{|}}/;
   if (regex.test(req.url)) {
-    // cтандартное изображение
     request("https://fsms.quadcode.com/storage/public/co/j5/n80r041mr5po6k6g/default_logo.png").pipe(res);
   } else {
     next();
@@ -47,6 +50,76 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).send("Failed to generate PDF: " + error.message);
   }
 });
+
+// Эндпоинт для получения всех брендов
+app.get('/api/brands', (req, res) => {
+  fs.readFile(brandsFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading brands.json:', err);
+      return res.status(500).send('Failed to read brands file');
+    }
+    try {
+      const brands = JSON.parse(data);
+      res.json(brands);
+    } catch (parseErr) {
+      console.error('Error parsing brands.json:', parseErr);
+      return res.status(500).send('Failed to parse brands file');
+    }
+  });
+});
+
+// Эндпоинт для добавления нового бренда
+app.post('/api/brands', (req, res) => {
+  fs.readFile(brandsFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading brands.json:', err);
+      return res.status(500).json({ error: 'Failed to read brands file' });
+    }
+
+    const brands = JSON.parse(data);
+    brands.push(req.body);
+
+    fs.writeFile(brandsFilePath, JSON.stringify(brands, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to brands.json:', err);
+        return res.status(500).json({ error: 'Failed to save brand' });
+      }
+
+      res.status(201).json({ message: 'Brand saved successfully' });
+    });
+  });
+});
+
+
+// Эндпоинт для удаления бренда по имени
+app.delete('/api/brands/:brandName', (req, res) => {
+  const brandNameToDelete = req.params.brandName;
+
+  fs.readFile(brandsFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading brands.json:', err);
+      return res.status(500).json({ error: 'Failed to read brands file' });
+    }
+
+    let brands = JSON.parse(data);
+    const initialLength = brands.length;
+    brands = brands.filter(brand => brand.brandName !== brandNameToDelete);
+
+    if (brands.length === initialLength) {
+      return res.status(404).json({ error: 'Brand not found' });
+    }
+
+    fs.writeFile(brandsFilePath, JSON.stringify(brands, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to brands.json:', err);
+        return res.status(500).json({ error: 'Failed to delete brand' });
+      }
+
+      res.status(200).json({ message: 'Brand deleted successfully' });
+    });
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
