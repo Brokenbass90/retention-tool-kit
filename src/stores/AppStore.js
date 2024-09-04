@@ -5,6 +5,8 @@ import { saveSettings, getSettings, deleteSettings } from '../utils/indexedDB';
 class AppStore {
   originalHtml = '';
   html = '';
+  currentLocaleContent = '';  
+  currentStyles = ''; 
   htmlByLocale = {};
   foldersData = {};
   selectedFolder = 'defaultFolder';
@@ -13,7 +15,6 @@ class AppStore {
   isOriginalSelected = true;
   highlightedText = '';
   showTxtToJson = false;
- //-----------------
   editLocaleModalVisible = false;
   localeToEdit = null;
 
@@ -46,8 +47,6 @@ class AppStore {
     });
   }
 
-
-  //-----------------
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -121,10 +120,8 @@ class AppStore {
       Object.keys(folder).forEach(locale => allLocales.add(locale));
     });
     
-    // Преобразуем в массив и сортируем
     let sortedLocales = Array.from(allLocales).sort();
     
-    // Убираем en и ru из отсортированного массива, если они есть
     const enIndex = sortedLocales.indexOf('en');
     if (enIndex > -1) {
       sortedLocales.splice(enIndex, 1);
@@ -134,7 +131,6 @@ class AppStore {
       sortedLocales.splice(ruIndex, 1);
     }
     
-    // Добавляем en и ru в начало, если они есть
     if (ruIndex > -1) {
       sortedLocales.unshift('ru');
     }
@@ -233,7 +229,7 @@ class AppStore {
     const jsonContent = blocks.reduce((acc, block, index) => {
       const key = `block_${String(index).padStart(2, '0')}`;
       let value = block.replace(/\{\{|\}\}/g, '').trim();
-      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>'); // Сохраняем преобразование @@ в <b>
+      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>'); 
       acc[key] = value || " ";
       return acc;
     }, {});
@@ -254,7 +250,7 @@ class AppStore {
     const jsonContent = blocks.reduce((acc, block, index) => {
       const key = `block_${String(index).padStart(2, '0')}`;
       let value = block.replace(/\{\{|\}\}/g, '').trim();
-      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>'); // Сохраняем преобразование @@ в <b>
+      value = value.replace(/@@(.*?)@@/g, '<b>$1</b>');
       acc[key] = value || " ";
       return acc;
     }, {});

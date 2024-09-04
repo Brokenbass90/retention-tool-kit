@@ -22,9 +22,27 @@
   .brand-item {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     padding: 10px;
   }
-  
+
+  .brends-logo{
+    width: 100%;
+    max-width: 160px;
+    padding-bottom: 15px;
+    margin: 0 auto;
+  }
+  .brand-image {
+    width: 100%; 
+    height: auto;
+    object-fit: cover; 
+    
+  }
+  .brends-buttons{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+  }
   .brand-list-toggle-button {
     position: absolute;
     left: -42px;
@@ -52,9 +70,27 @@
   width: 100%;
 }
 
-.brand-image {
-  width: 50px; /* Ширина изображения */
-  height: 50px; /* Высота изображения */
-  object-fit: cover; /* Сохраняет пропорции изображения */
-  margin-right: 10px; /* Отступ от текста */
+
+.blue-button{
+  padding: 10px 15px;
+  background-color: #1890ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.left-button{
+  width: 70%;
+}
+.right-button{
+  width: 25%;
+  background-color: #ff5c5c;
+  border: none;
+  color: white ; 
+  font-size: 18px; 
+  transition: background-color 0.3s ease;
+}
+.right-button:hover{
+  background-color: #e04e4e;
 }
