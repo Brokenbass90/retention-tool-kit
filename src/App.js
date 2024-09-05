@@ -32,7 +32,8 @@ const App = observer(() => {
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [brands, setBrands] = useState([]);
   const [isBrandListOpen, setIsBrandListOpen] = useState(false);
-  const [setCurrentBrand] = useState(null);
+  // eslint-disable-next-line
+  const [currentBrand, setCurrentBrand] = useState(null);
 
 
   useEffect(() => {
@@ -46,20 +47,21 @@ const App = observer(() => {
       }
       fetchBrands();
     };
-
+  
     loadInitialData();
   }, []);
+  
 
   useEffect(() => {
     const saveHtmlToIndexedDB = async () => {
-      if (appStore.html) {
-        await saveSettings({ html: appStore.html }, 'html');
-      }
+      await saveSettings({ html: appStore.html }, 'html');
     };
-
+  
     saveHtmlToIndexedDB();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appStore.html]);
+  
+
 
   const fetchBrands = async () => {
     try {
@@ -138,45 +140,50 @@ const App = observer(() => {
 
 
 
-const handleRestoreOriginal = () => {
-  runInAction(() => {
-    appStore.html = appStore.originalHtml; 
-    appStore.selectedLocale = '';           
-    setCurrentBrand(null);                 
-    appStore.isOriginalSelected = true;     
-  });
-};
+  const handleRestoreOriginal = () => {
+    runInAction(() => {
+      appStore.html = appStore.originalHtml;
+      appStore.selectedLocale = '';
+      setCurrentBrand(null);
+      appStore.isOriginalSelected = true;
+    });
+  };
+  
 
 
 
 const handleApplyBrand = (brand) => {
   const placeholders = {
-      'brand_color': brand.styles.brand_color,
-      'brand_additional_color': brand.styles.brand_additional_color,
-      'on_brand_color': brand.styles.on_brand_color,
-      'surface_color': brand.styles.surface_color,
-      'surface_variant_color': brand.styles.surface_variant_color,
-      'on_surface_color': brand.styles.on_surface_color,
-      'background_color': brand.styles.background_color,
-      'accent_color': brand.styles.accent_color,
-      'button_radius': brand.styles.button_radius,
-      'small_radius': brand.styles.small_radius,
-      'large_radius': brand.styles.large_radius,
-      'logo_email_brand': brand.styles.logo_email_brand,
-      'padding_l': brand.styles.padding_l,
-      'padding_m': brand.styles.padding_m,
-      'padding_s': brand.styles.padding_s,
-      'padding_xs': brand.styles.padding_xs,
+    'brand_color': brand.styles.brand_color,
+    'brand_additional_color': brand.styles.brand_additional_color,
+    'on_brand_color': brand.styles.on_brand_color,
+    'surface_color': brand.styles.surface_color,
+    'surface_variant_color': brand.styles.surface_variant_color,
+    'on_surface_color': brand.styles.on_surface_color,
+    'background_color': brand.styles.background_color,
+    'accent_color': brand.styles.accent_color,
+    'button_radius': brand.styles.button_radius,
+    'small_radius': brand.styles.small_radius,
+    'large_radius': brand.styles.large_radius,
+    'logo_email_brand': brand.styles.logo_email_brand,
+    'padding_l': brand.styles.padding_l,
+    'padding_m': brand.styles.padding_m,
+    'padding_s': brand.styles.padding_s,
+    'padding_xs': brand.styles.padding_xs,
   };
 
+  // Применяем стили бренда
   appStore.currentStyles = placeholders;
 
+  // Обновляем HTML с применением стилей
   runInAction(() => {
-      appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
+    appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
   });
 
-  setCurrentBrand(brand); 
+  // Сохраняем текущий бренд
+  setCurrentBrand(brand);
 };
+
 
   
   function onElementClick(text) {
@@ -302,12 +309,13 @@ const handleApplyBrand = (brand) => {
       />
 
       <div className={`brand-list-panel ${isBrandListOpen ? 'open' : ''}`}>
-        <BrandList 
-          brands={brands} 
-          onDelete={handleDeleteBrand} 
-          onApplyBrand={handleApplyBrand} 
-          onRestoreOriginal={handleRestoreOriginal} 
-        />
+          <BrandList
+            brands={brands}
+            onDelete={handleDeleteBrand}
+            onApplyBrand={handleApplyBrand}
+            onRestoreOriginal={handleRestoreOriginal}
+          />
+
       </div>
 
       <button className="brand-list-toggle-button" onClick={toggleBrandList}>

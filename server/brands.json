@@ -1,5 +1,45 @@
 [
-  {},
-  {},
+  {
+    "brandName": "Exnova",
+    "styles": {
+      "brand_color": "#0081e3",
+      "brand_additional_color": "#f3f8ff",
+      "on_brand_color": "#262832",
+      "surface_color": "#ffffff",
+      "surface_variant_color": "#0081e3",
+      "on_surface_color": "#262832",
+      "background_color": "#f5f9ff",
+      "accent_color": "#0081e3",
+      "button_radius": "3px",
+      "small_radius": "3px",
+      "large_radius": "12px",
+      "logo_email_brand": "https://fsms.quadcode.com/storage/public/ck/9v/6s2gs1mptg5kde40/m-logoCombination.png",
+      "padding_l": "6px",
+      "padding_m": "12px",
+      "padding_s": "24px",
+      "padding_xs": "32px"
+    }
+  },
+  {
+    "brandName": "Exnova",
+    "styles": {
+      "brand_color": "#0081e3",
+      "brand_additional_color": "#f3f8ff",
+      "on_brand_color": "#262832",
+      "surface_color": "#ffffff",
+      "surface_variant_color": "#0081e3",
+      "on_surface_color": "#262832",
+      "background_color": "#f5f9ff",
+      "accent_color": "#0081e3",
+      "button_radius": "3px",
+      "small_radius": "3px",
+      "large_radius": "12px",
+      "logo_email_brand": "https://fsms.quadcode.com/storage/public/cm/sb/qqq85cee2vclvcm0/IQ LogoCombination (1).png",
+      "padding_l": "6px",
+      "padding_m": "12px",
+      "padding_s": "24px",
+      "padding_xs": "32px"
+    }
+  },
   {}
 ]
