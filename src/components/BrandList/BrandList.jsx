@@ -2,14 +2,16 @@ import React from 'react';
 import './BrandList.css';
 import { appStore } from '../../stores/AppStore'; 
 import { runInAction } from 'mobx';
-import { combineHtmlAndStyles } from '../../App'; 
 
 const BrandList = ({ brands, onDelete, onApplyBrand }) => {
 
   const handleRestoreOriginalStyles = () => {
     runInAction(() => {
-      appStore.currentStyles = ''; 
-      appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
+      // Очищаем текущие стили
+      appStore.currentStyles = {};
+
+      // Обновляем HTML с учетом текущего контента локали, но без стилей
+      appStore.html = appStore.currentLocaleContent || appStore.originalHtml;
     });
   };
 

@@ -139,52 +139,64 @@ const App = observer(() => {
   
 
 
-
   const handleRestoreOriginal = () => {
     runInAction(() => {
-      appStore.html = appStore.originalHtml;
+      // Устанавливаем текущий контент как оригинальный
+      appStore.currentLocaleContent = appStore.originalHtml;
+  
+      // Очищаем текущие стили
+      appStore.currentStyles = {};
+  
+      // Обновляем HTML с исходным контентом и пустыми стилями
+      appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
+  
+      // Сбрасываем выбранную локаль и бренд
       appStore.selectedLocale = '';
       setCurrentBrand(null);
+  
       appStore.isOriginalSelected = true;
     });
   };
   
 
-
-
-const handleApplyBrand = (brand) => {
-  const placeholders = {
-    'brand_color': brand.styles.brand_color,
-    'brand_additional_color': brand.styles.brand_additional_color,
-    'on_brand_color': brand.styles.on_brand_color,
-    'surface_color': brand.styles.surface_color,
-    'surface_variant_color': brand.styles.surface_variant_color,
-    'on_surface_color': brand.styles.on_surface_color,
-    'background_color': brand.styles.background_color,
-    'accent_color': brand.styles.accent_color,
-    'button_radius': brand.styles.button_radius,
-    'small_radius': brand.styles.small_radius,
-    'large_radius': brand.styles.large_radius,
-    'logo_email_brand': brand.styles.logo_email_brand,
-    'padding_l': brand.styles.padding_l,
-    'padding_m': brand.styles.padding_m,
-    'padding_s': brand.styles.padding_s,
-    'padding_xs': brand.styles.padding_xs,
+  const handleApplyBrand = (brand) => {
+    const placeholders = {
+      'brand_color': brand.styles.brand_color,
+      'brand_additional_color': brand.styles.brand_additional_color,
+      'on_brand_color': brand.styles.on_brand_color,
+      'surface_color': brand.styles.surface_color,
+      'surface_variant_color': brand.styles.surface_variant_color,
+      'on_surface_color': brand.styles.on_surface_color,
+      'background_color': brand.styles.background_color,
+      'accent_color': brand.styles.accent_color,
+      'button_radius': brand.styles.button_radius,
+      'small_radius': brand.styles.small_radius,
+      'large_radius': brand.styles.large_radius,
+      'logo_email_brand': brand.styles.logo_email_brand,
+      'padding_l': brand.styles.padding_l,
+      'padding_m': brand.styles.padding_m,
+      'padding_s': brand.styles.padding_s,
+      'padding_xs': brand.styles.padding_xs,
+    };
+  
+    // Применяем стили бренда
+    appStore.currentStyles = placeholders;
+  
+    // Используем оригинальный HTML, если контент локали отсутствует
+    const contentToApply = appStore.currentLocaleContent || appStore.originalHtml;
+  
+    // Обновляем HTML с применением стилей только если есть контент
+    if (contentToApply) {
+      runInAction(() => {
+        appStore.html = combineHtmlAndStyles(contentToApply, appStore.currentStyles);
+      });
+    }
+  
+    // Сохраняем текущий бренд
+    setCurrentBrand(brand);
   };
-
-  // Применяем стили бренда
-  appStore.currentStyles = placeholders;
-
-  // Обновляем HTML с применением стилей
-  runInAction(() => {
-    appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
-  });
-
-  // Сохраняем текущий бренд
-  setCurrentBrand(brand);
-};
-
-
+  
+  
   
   function onElementClick(text) {
     if (text) {
