@@ -13,14 +13,14 @@ import BrandConfigurator from './components/BrandConfigurator/BrandConfigurator'
 import BrandList from './components/BrandList/BrandList';
 import { getSettings, saveSettings } from './utils/indexedDB';
 import { runInAction } from 'mobx';
-import { replacePlaceholders } from './utils/replacePlaceholders'; 
+import { replacePlaceholders } from './utils/replacePlaceholders';
 
 export const combineHtmlAndStyles = (htmlContent, styles) => {
   let updatedHtml = htmlContent;
 
   for (const [placeholder, value] of Object.entries(styles)) {
-      const regex = new RegExp(`{%${placeholder}%}`, 'g');
-      updatedHtml = updatedHtml.replace(regex, value || '');
+    const regex = new RegExp(`{%${placeholder}%}`, 'g');
+    updatedHtml = updatedHtml.replace(regex, value || '');
   }
 
   return updatedHtml;
@@ -31,71 +31,53 @@ const App = observer(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [brands, setBrands] = useState([]);
+  const [brandToEdit, setBrandToEdit] = useState(null);
   // eslint-disable-next-line
   const [currentBrand, setCurrentBrand] = useState(null);
-
 
   useEffect(() => {
     const loadInitialData = async () => {
       const savedHtml = await getSettings('html');
       if (savedHtml && savedHtml.html) {
         appStore.setHtml(savedHtml.html);
-        appStore.setOriginalHtml(savedHtml.html); 
+        appStore.setOriginalHtml(savedHtml.html);
       } else {
         appStore.setOriginalHtml(appStore.html);
       }
       fetchBrands();
     };
-  
+
     loadInitialData();
   }, []);
-  
 
   useEffect(() => {
     const saveHtmlToIndexedDB = async () => {
       await saveSettings({ html: appStore.html }, 'html');
     };
-  
-    saveHtmlToIndexedDB();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appStore.html]);
-  
 
+    saveHtmlToIndexedDB();
+    // eslint-disable-next-line
+  }, [appStore.html]);
 
   const fetchBrands = async () => {
     try {
       const response = await fetch('/api/brands');
       const data = await response.json();
-      setBrands(data.filter(brand => Object.keys(brand).length > 0)); 
+      setBrands(data.filter(brand => Object.keys(brand).length > 0));
     } catch (error) {
       console.error('Error fetching brands:', error);
     }
   };
 
-  const handleSaveBrand = async (brandData) => {
-    try {
-      const response = await fetch('/api/brands', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(brandData),
-      });
-
-      if (response.ok) {
-        await fetchBrands(); 
-        setIsConfiguratorOpen(false);
-      } else {
-        console.error('Failed to save brand');
-      }
-    } catch (error) {
-      console.error('Error saving brand:', error);
-    }
+  const handleSaveBrand = async () => {
+    await fetchBrands();
+    setIsConfiguratorOpen(false);
+    setBrandToEdit(null);
   };
 
   const handleDeleteBrand = async (index) => {
     const brandToDelete = brands[index];
-    
+
     if (!brandToDelete || !brandToDelete.brandName) {
       console.error('Brand name is required for deletion');
       return;
@@ -116,116 +98,67 @@ const App = observer(() => {
       console.error('Error deleting brand:', error);
     }
   };
+
   const handleLocaleSelection = (locale) => {
     let updatedHtml = appStore.originalHtml;
-  
-    // Применяем локаль
+
     Object.keys(appStore.foldersData).forEach(folderName => {
       if (appStore.foldersData[folderName][locale]) {
         updatedHtml = replacePlaceholders(updatedHtml, appStore.foldersData[folderName][locale], folderName);
       }
     });
-  
-    // Сохраняем текущий контент локали
+
     appStore.currentLocaleContent = updatedHtml;
-  
-    // Обновляем общий HTML, добавляя стили
+
     runInAction(() => {
       appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
       appStore.selectedLocale = locale;
     });
   };
-  
-
-
-  // const handleRestoreOriginal = () => {
-  //   runInAction(() => {
-  //     // Устанавливаем текущий контент как оригинальный
-  //     appStore.currentLocaleContent = appStore.originalHtml;
-  
-  //     // Очищаем текущие стили
-  //     appStore.currentStyles = {};
-  
-  //     // Обновляем HTML с исходным контентом и пустыми стилями
-  //     appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
-  
-  //     // Сбрасываем выбранную локаль и бренд
-  //     appStore.selectedLocale = '';
-  //     setCurrentBrand(null);
-  
-  //     appStore.isOriginalSelected = true;
-  //   });
-  // };
-  
 
   const handleApplyBrand = (brand) => {
     const placeholders = {
-      'brand_color': brand.styles.brand_color,
-      'brand_additional_color': brand.styles.brand_additional_color,
-      'on_brand_color': brand.styles.on_brand_color,
-      'surface_color': brand.styles.surface_color,
-      'surface_variant_color': brand.styles.surface_variant_color,
-      'on_surface_color': brand.styles.on_surface_color,
-      'background_color': brand.styles.background_color,
-      'accent_color': brand.styles.accent_color,
-      'button_radius': brand.styles.button_radius,
-      'small_radius': brand.styles.small_radius,
-      'large_radius': brand.styles.large_radius,
-      'logo_email_brand': brand.styles.logo_email_brand,
-      'padding_l': brand.styles.padding_l,
-      'padding_m': brand.styles.padding_m,
-      'padding_s': brand.styles.padding_s,
-      'padding_xs': brand.styles.padding_xs,
+      brand_color: brand.styles.brand_color,
+      brand_additional_color: brand.styles.brand_additional_color,
+      on_brand_color: brand.styles.on_brand_color,
+      surface_color: brand.styles.surface_color,
+      surface_variant_color: brand.styles.surface_variant_color,
+      on_surface_color: brand.styles.on_surface_color,
+      background_color: brand.styles.background_color,
+      accent_color: brand.styles.accent_color,
+      button_radius: brand.styles.button_radius,
+      small_radius: brand.styles.small_radius,
+      large_radius: brand.styles.large_radius,
+      logo_email_brand: brand.styles.logo_email_brand,
+      padding_l: brand.styles.padding_l,
+      padding_m: brand.styles.padding_m,
+      padding_s: brand.styles.padding_s,
+      padding_xs: brand.styles.padding_xs,
     };
-  
-    // Применяем стили бренда
+
     appStore.currentStyles = placeholders;
-  
-    // Используем оригинальный HTML, если контент локали отсутствует
     const contentToApply = appStore.currentLocaleContent || appStore.originalHtml;
-  
-    // Обновляем HTML с применением стилей только если есть контент
+
     if (contentToApply) {
       runInAction(() => {
         appStore.html = combineHtmlAndStyles(contentToApply, appStore.currentStyles);
       });
     }
-  
-    // Сохраняем текущий бренд
+
     setCurrentBrand(brand);
   };
-  
-  
-  
-  function onElementClick(text) {
-    if (text) {
-      appStore.setHighlightedText(text);
-    }
-  }
 
-  function handleFolderClick(folderName) {
+  const handleEditBrand = (brand) => {
+    setBrandToEdit(brand);
+    setIsConfiguratorOpen(true);
+  };
+
+  const handleFolderClick = (folderName) => {
     const setButtonColor = (color) => {
       setButtonColors((prev) => ({ ...prev, [folderName]: color }));
     };
     appStore.handleFolderSelection(folderName, setButtonColor);
-  }
-
-  function openAddLocaleModal() {
-    setIsModalOpen(true);
-  }
-
-  function closeAddLocaleModal() {
-    setIsModalOpen(false);
-  }
-
-  function handleSaveLocale(data) {
-    appStore.addLocaleManually(data);
-  }
-
-  function toggleConfigurator() {
-    setIsConfiguratorOpen(!isConfiguratorOpen);
-  }
-
+  };
 
   return (
     <div className="App">
@@ -245,7 +178,7 @@ const App = observer(() => {
           className={`original-btn ${appStore.isOriginalSelected ? 'selected' : ''}`}
           onClick={() => {
             runInAction(() => {
-              appStore.currentLocaleContent = appStore.originalHtml; 
+              appStore.currentLocaleContent = appStore.originalHtml;
               appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
               appStore.selectedLocale = '';
             });
@@ -256,17 +189,17 @@ const App = observer(() => {
 
         {appStore.locales.map((locale) => (
           <div key={locale} className="locale-btn-container">
-            <button 
+            <button
               onClick={() => {
-                handleLocaleSelection(locale);  
+                handleLocaleSelection(locale);
                 appStore.isOriginalSelected = false;
-              }} 
+              }}
               className={`locale-btn ${appStore.selectedLocale === locale && !appStore.isOriginalSelected ? 'selected' : ''}`}
             >
               {locale}
             </button>
-            <button 
-              className="edit-locale-btn" 
+            <button
+              className="edit-locale-btn"
               onClick={() => appStore.openEditLocaleModal(locale)}
             >
               ✎
@@ -274,9 +207,9 @@ const App = observer(() => {
           </div>
         ))}
 
-        <button className="original-btn" onClick={openAddLocaleModal}>+</button>
+        <button className="original-btn" onClick={() => setIsModalOpen(true)}>+</button>
       </div>
-      
+
       <div className="folder-bar">
         {Object.keys(appStore.foldersData).map((folderName) => (
           <div key={folderName} className="folder-entry">
@@ -296,7 +229,7 @@ const App = observer(() => {
 
       <div className="content-area">
         <PdfMaker html={appStore.html} setHtml={appStore.setHtml.bind(appStore)} highlightedText={appStore.highlightedText} />
-        <HtmlWindow htmlContent={appStore.html} onElementClick={onElementClick} />
+        <HtmlWindow htmlContent={appStore.html} onElementClick={(text) => appStore.setHighlightedText(text)} />
       </div>
       <div className="buttons-area">
         <ConvertButton html={appStore.html} />
@@ -305,24 +238,30 @@ const App = observer(() => {
         </button>
       </div>
       {appStore.showTxtToJson && <TxtToJson onClose={appStore.toggleTxtToJson} isVisible={appStore.showTxtToJson} />}
-      {isModalOpen && <AddLocaleModal onClose={closeAddLocaleModal} onSave={handleSaveLocale} />}
-      
-      <BrandConfigurator 
-        isOpen={isConfiguratorOpen} 
-        onSave={handleSaveBrand} 
-        onCancel={toggleConfigurator} 
+      {isModalOpen && <AddLocaleModal onClose={() => setIsModalOpen(false)} onSave={(data) => appStore.addLocaleManually(data)} />}
+
+      <BrandConfigurator
+        isOpen={isConfiguratorOpen}
+        onSave={handleSaveBrand}
+        onCancel={() => {
+          setIsConfiguratorOpen(false);
+          setBrandToEdit(null);
+        }}
+        brandToEdit={brandToEdit}
       />
 
-      <div className={`brand-list-panel`}>
+      <div className="brand-list-panel">
         <BrandList
           brands={brands}
           onDelete={handleDeleteBrand}
           onApplyBrand={handleApplyBrand}
-          toggleConfigurator={toggleConfigurator}  
-          isConfiguratorOpen={isConfiguratorOpen}  
+          onEditBrand={handleEditBrand}
+          toggleConfigurator={() => {
+            setIsConfiguratorOpen(true);
+            setBrandToEdit(null);
+          }}
         />
       </div>
-
     </div>
   );
 });

@@ -3,7 +3,7 @@ import './BrandList.css';
 import { appStore } from '../../stores/AppStore'; 
 import { runInAction } from 'mobx';
 
-const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfiguratorOpen }) => {
+const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfiguratorOpen, onEditBrand }) => {
   const [isBrandListOpen, setIsBrandListOpen] = useState(false);
 
   const handleRestoreOriginalStyles = () => {
@@ -42,6 +42,9 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
             <div className='brends-buttons'>
               <button className='blue-button left-button' onClick={() => onApplyBrand(brand)}>
                 {brand.brandName}
+              </button>
+              <button className='blue-button middle-button' onClick={() => onEditBrand(brand)}>
+                Edit
               </button>
               <button className='blue-button right-button' onClick={() => onDelete(index)}>
                 ×

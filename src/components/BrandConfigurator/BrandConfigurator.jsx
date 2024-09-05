@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './BrandConfigurator.css';
 
-const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправлено здесь
+const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
   const [brandName, setBrandName] = useState('');
   const [brandColor, setBrandColor] = useState('');
   const [brandAdditionalColor, setBrandAdditionalColor] = useState('');
@@ -19,6 +19,50 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
   const [paddingM, setPaddingM] = useState('');
   const [paddingS, setPaddingS] = useState('');
   const [paddingXs, setPaddingXs] = useState('');
+
+  useEffect(() => {
+    if (brandToEdit) {
+      setBrandName(brandToEdit.brandName);
+      setBrandColor(brandToEdit.styles.brand_color || '');
+      setBrandAdditionalColor(brandToEdit.styles.brand_additional_color || '');
+      setOnBrandColor(brandToEdit.styles.on_brand_color || '');
+      setSurfaceColor(brandToEdit.styles.surface_color || '');
+      setSurfaceVariantColor(brandToEdit.styles.surface_variant_color || '');
+      setOnSurfaceColor(brandToEdit.styles.on_surface_color || '');
+      setBackgroundColor(brandToEdit.styles.background_color || '');
+      setAccentColor(brandToEdit.styles.accent_color || '');
+      setButtonRadius(brandToEdit.styles.button_radius || '');
+      setSmallRadius(brandToEdit.styles.small_radius || '');
+      setLargeRadius(brandToEdit.styles.large_radius || '');
+      setLogoEmailBrand(brandToEdit.styles.logo_email_brand || '');
+      setPaddingL(brandToEdit.styles.padding_l || '');
+      setPaddingM(brandToEdit.styles.padding_m || '');
+      setPaddingS(brandToEdit.styles.padding_s || '');
+      setPaddingXs(brandToEdit.styles.padding_xs || '');
+    } else {
+      clearFields();
+    }
+  }, [brandToEdit]);
+
+  const clearFields = () => {
+    setBrandName('');
+    setBrandColor('');
+    setBrandAdditionalColor('');
+    setOnBrandColor('');
+    setSurfaceColor('');
+    setSurfaceVariantColor('');
+    setOnSurfaceColor('');
+    setBackgroundColor('');
+    setAccentColor('');
+    setButtonRadius('');
+    setSmallRadius('');
+    setLargeRadius('');
+    setLogoEmailBrand('');
+    setPaddingL('');
+    setPaddingM('');
+    setPaddingS('');
+    setPaddingXs('');
+  };
 
   const handleSave = async () => {
     if (!brandName.trim() || !brandColor.trim()) {
@@ -59,25 +103,7 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
   
       if (response.ok) {
         onSave();
-        
-        // Очищаем поля после успешного сохранения
-        setBrandName('');
-        setBrandColor('');
-        setBrandAdditionalColor('');
-        setOnBrandColor('');
-        setSurfaceColor('');
-        setSurfaceVariantColor('');
-        setOnSurfaceColor('');
-        setBackgroundColor('');
-        setAccentColor('');
-        setButtonRadius('');
-        setSmallRadius('');
-        setLargeRadius('');
-        setLogoEmailBrand('');
-        setPaddingL('');
-        setPaddingM('');
-        setPaddingS('');
-        setPaddingXs('');
+        clearFields();
       } else {
         console.error('Failed to save brand');
       }
@@ -86,13 +112,10 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
     }
   };
 
-  
-  
-
   return (
     <div className={`brand-configurator-container ${isOpen ? 'open' : ''}`}>
       <div className="brand-configurator">
-        <h2>Brand Configurator</h2>
+        <h2>{brandToEdit ? 'Edit Brand' : 'Create Brand'}</h2>
         <div className="input-group">
           <input
             type="text"
@@ -197,8 +220,11 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
             onChange={(e) => setPaddingXs(e.target.value)}
           />
         </div>
-        <button onClick={handleSave}>Save</button>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={handleSave}>{brandToEdit ? 'Save Changes' : 'Save'}</button>
+        <button onClick={() => {
+          onCancel();
+          clearFields();
+        }}>Cancel</button>
       </div>
     </div>
   );
