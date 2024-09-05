@@ -148,21 +148,3 @@
   background-color: #e0e0e0;
   transition: background-color 150ms; 
 }
-
-.configurator-toggle-button {
-  background-color: #1890ff;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1001;
-}
-
-.configurator-toggle-button:hover {
-  background-color: #40a9ff;
-}

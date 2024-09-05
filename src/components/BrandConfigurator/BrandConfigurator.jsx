@@ -59,6 +59,25 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
   
       if (response.ok) {
         onSave();
+        
+        // Очищаем поля после успешного сохранения
+        setBrandName('');
+        setBrandColor('');
+        setBrandAdditionalColor('');
+        setOnBrandColor('');
+        setSurfaceColor('');
+        setSurfaceVariantColor('');
+        setOnSurfaceColor('');
+        setBackgroundColor('');
+        setAccentColor('');
+        setButtonRadius('');
+        setSmallRadius('');
+        setLargeRadius('');
+        setLogoEmailBrand('');
+        setPaddingL('');
+        setPaddingM('');
+        setPaddingS('');
+        setPaddingXs('');
       } else {
         console.error('Failed to save brand');
       }
@@ -66,6 +85,7 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave }) => { // Исправл�
       console.error('Error:', error);
     }
   };
+
   
   
 

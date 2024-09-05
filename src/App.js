@@ -31,7 +31,6 @@ const App = observer(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [brands, setBrands] = useState([]);
-  const [isBrandListOpen, setIsBrandListOpen] = useState(false);
   // eslint-disable-next-line
   const [currentBrand, setCurrentBrand] = useState(null);
 
@@ -139,24 +138,24 @@ const App = observer(() => {
   
 
 
-  const handleRestoreOriginal = () => {
-    runInAction(() => {
-      // Устанавливаем текущий контент как оригинальный
-      appStore.currentLocaleContent = appStore.originalHtml;
+  // const handleRestoreOriginal = () => {
+  //   runInAction(() => {
+  //     // Устанавливаем текущий контент как оригинальный
+  //     appStore.currentLocaleContent = appStore.originalHtml;
   
-      // Очищаем текущие стили
-      appStore.currentStyles = {};
+  //     // Очищаем текущие стили
+  //     appStore.currentStyles = {};
   
-      // Обновляем HTML с исходным контентом и пустыми стилями
-      appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
+  //     // Обновляем HTML с исходным контентом и пустыми стилями
+  //     appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
   
-      // Сбрасываем выбранную локаль и бренд
-      appStore.selectedLocale = '';
-      setCurrentBrand(null);
+  //     // Сбрасываем выбранную локаль и бренд
+  //     appStore.selectedLocale = '';
+  //     setCurrentBrand(null);
   
-      appStore.isOriginalSelected = true;
-    });
-  };
+  //     appStore.isOriginalSelected = true;
+  //   });
+  // };
   
 
   const handleApplyBrand = (brand) => {
@@ -227,9 +226,6 @@ const App = observer(() => {
     setIsConfiguratorOpen(!isConfiguratorOpen);
   }
 
-  function toggleBrandList() {
-    setIsBrandListOpen(!isBrandListOpen);
-  }
 
   return (
     <div className="App">
@@ -279,9 +275,6 @@ const App = observer(() => {
         ))}
 
         <button className="original-btn" onClick={openAddLocaleModal}>+</button>
-        <button className="configurator-toggle-button" onClick={toggleConfigurator}>
-          {isConfiguratorOpen ? '▲' : '▼'}
-        </button>
       </div>
       
       <div className="folder-bar">
@@ -320,19 +313,16 @@ const App = observer(() => {
         onCancel={toggleConfigurator} 
       />
 
-      <div className={`brand-list-panel ${isBrandListOpen ? 'open' : ''}`}>
-          <BrandList
-            brands={brands}
-            onDelete={handleDeleteBrand}
-            onApplyBrand={handleApplyBrand}
-            onRestoreOriginal={handleRestoreOriginal}
-          />
-
+      <div className={`brand-list-panel`}>
+        <BrandList
+          brands={brands}
+          onDelete={handleDeleteBrand}
+          onApplyBrand={handleApplyBrand}
+          toggleConfigurator={toggleConfigurator}  
+          isConfiguratorOpen={isConfiguratorOpen}  
+        />
       </div>
 
-      <button className="brand-list-toggle-button" onClick={toggleBrandList}>
-        {isBrandListOpen ? 'Hide Brands' : 'Show Brands'}
-      </button>
     </div>
   );
 });

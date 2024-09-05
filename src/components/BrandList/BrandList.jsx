@@ -1,28 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './BrandList.css';
 import { appStore } from '../../stores/AppStore'; 
 import { runInAction } from 'mobx';
 
-const BrandList = ({ brands, onDelete, onApplyBrand }) => {
+const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfiguratorOpen }) => {
+  const [isBrandListOpen, setIsBrandListOpen] = useState(false);
 
   const handleRestoreOriginalStyles = () => {
     runInAction(() => {
-      // Очищаем текущие стили
       appStore.currentStyles = {};
-
-      // Обновляем HTML с учетом текущего контента локали, но без стилей
       appStore.html = appStore.currentLocaleContent || appStore.originalHtml;
     });
   };
 
+  const toggleBrandList = () => {
+    setIsBrandListOpen(!isBrandListOpen);
+  };
+
   return (
-    <div className="brand-list">
+    <div className={`brand-list-panel ${isBrandListOpen ? 'open' : ''}`}>
+      <button className="brand-list-toggle-button" onClick={toggleBrandList}>
+        {isBrandListOpen ? 'Hide Brands' : 'Show Brands'}
+      </button>
+
       <div className="brand-item">
         <button className='blue-button' onClick={handleRestoreOriginalStyles}>
           Original Styles
         </button>
       </div>
-      {brands.length > 0 ? (
+
+      {isBrandListOpen && brands.length > 0 ? (
         brands.map((brand, index) => (
           <div key={index} className="brand-item">
             <div className='brends-logo'>
@@ -43,8 +50,12 @@ const BrandList = ({ brands, onDelete, onApplyBrand }) => {
           </div>
         ))
       ) : (
-        <p className='text-color'>No brands saved</p>
+        isBrandListOpen && <p className='text-color'>No brands saved</p>
       )}
+
+      <button className="configurator-toggle-button" onClick={toggleConfigurator}>
+        {isConfiguratorOpen ? 'Close' : 'Create new brand'}
+      </button>
     </div>
   );
 };
