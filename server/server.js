@@ -25,6 +25,8 @@ app.use((req, res, next) => {
 // Генерация PDF
 app.post('/generate-pdf', async (req, res) => {
   try {
+    console.log("Received HTML content:", req.body);
+
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -38,12 +40,13 @@ app.post('/generate-pdf', async (req, res) => {
         '--disable-gpu'
       ],
     });
- 
+
     const page = await browser.newPage();
     await page.setContent(req.body, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({ format: 'A4', printBackground: true });
     await browser.close();
 
+    console.log("PDF generated successfully.");
     res.contentType('application/pdf');
     res.send(pdf);
   } catch (error) {
@@ -51,6 +54,7 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).send("Failed to generate PDF: " + error.message);
   }
 });
+
 
 
 // Эндпоинт для получения всех брендов
