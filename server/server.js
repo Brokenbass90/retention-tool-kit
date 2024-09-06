@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 const brandsFilePath = path.join(__dirname, 'brands.json');
+const templatesFilePath = path.join(__dirname, 'templates.json'); // Новый файл для хранения шаблонов
 
 app.use(express.static('build'));
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
   }
 });
 
+// Генерация PDF
 app.post('/generate-pdf', async (req, res) => {
   try {
     const browser = await puppeteer.launch({
@@ -90,7 +92,6 @@ app.post('/api/brands', (req, res) => {
   });
 });
 
-
 // Эндпоинт для удаления бренда по имени
 app.delete('/api/brands/:brandName', (req, res) => {
   const brandNameToDelete = req.params.brandName;
@@ -120,6 +121,75 @@ app.delete('/api/brands/:brandName', (req, res) => {
   });
 });
 
+// Новый функционал для работы с шаблонами
+
+// Эндпоинт для получения всех шаблонов
+app.get('/api/templates', (req, res) => {
+  fs.readFile(templatesFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading templates.json:', err);
+      return res.status(500).send('Failed to read templates file');
+    }
+    try {
+      const templates = JSON.parse(data);
+      res.json(templates);
+    } catch (parseErr) {
+      console.error('Error parsing templates.json:', parseErr);
+      return res.status(500).send('Failed to parse templates file');
+    }
+  });
+});
+
+// Эндпоинт для добавления нового шаблона
+app.post('/api/templates', (req, res) => {
+  fs.readFile(templatesFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading templates.json:', err);
+      return res.status(500).json({ error: 'Failed to read templates file' });
+    }
+
+    const templates = JSON.parse(data);
+    templates.push(req.body);
+
+    fs.writeFile(templatesFilePath, JSON.stringify(templates, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to templates.json:', err);
+        return res.status(500).json({ error: 'Failed to save template' });
+      }
+
+      res.status(201).json({ message: 'Template saved successfully' });
+    });
+  });
+});
+
+// Эндпоинт для удаления шаблона по имени
+app.delete('/api/templates/:templateName', (req, res) => {
+  const templateNameToDelete = req.params.templateName;
+
+  fs.readFile(templatesFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading templates.json:', err);
+      return res.status(500).json({ error: 'Failed to read templates file' });
+    }
+
+    let templates = JSON.parse(data);
+    const initialLength = templates.length;
+    templates = templates.filter(template => template.name !== templateNameToDelete);
+
+    if (templates.length === initialLength) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    fs.writeFile(templatesFilePath, JSON.stringify(templates, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to templates.json:', err);
+        return res.status(500).json({ error: 'Failed to delete template' });
+      }
+
+      res.status(200).json({ message: 'Template deleted successfully' });
+    });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

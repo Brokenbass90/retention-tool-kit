@@ -4,13 +4,13 @@ import AceEditor from 'react-ace';
 import { autorun } from 'mobx';
 import { appStore } from '../../stores/AppStore';
 import './PdfMaker.css';
-import { FaCompress, FaExchangeAlt, FaArrowsAlt, FaCopy } from 'react-icons/fa'; // Добавлен FaCopy
+import { FaCompress, FaExchangeAlt, FaArrowsAlt, FaCopy } from 'react-icons/fa';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/snippets/html';
 
-const PdfMaker = observer(() => {
+const PdfMaker = observer(({ selectedTemplate }) => {
   const [wrapEnabled, setWrapEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
@@ -44,8 +44,17 @@ const PdfMaker = observer(() => {
     });
 
     return () => disposer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [appStore.highlightedText]);
+
+  useEffect(() => {
+    if (selectedTemplate) {
+      console.log("Selected template in PdfMaker:", selectedTemplate);
+      appStore.setOriginalHtml(selectedTemplate);
+    }
+  }, [selectedTemplate]);
+  
+  
 
   const handleCodeChange = (newHtml) => {
     if (newHtml !== appStore.html) {
@@ -68,7 +77,7 @@ const PdfMaker = observer(() => {
       navigator.clipboard.writeText(text)
         .then(() => {
           setIsCopying(true);
-          setTimeout(() => setIsCopying(false), 1000); // Подсветка кнопки на 1 секунду
+          setTimeout(() => setIsCopying(false), 1000);
         })
         .catch(() => {
           setIsCopying(false);
@@ -81,7 +90,7 @@ const PdfMaker = observer(() => {
       <div className="toolbar">
         <button onClick={toggleWrap} className="toolbar-button"><FaExchangeAlt /></button>
         <button onClick={toggleFullscreen} className="fullscreen-button">{isFullscreen ? <FaCompress /> : <FaArrowsAlt />}</button>
-        <button onClick={copyToClipboard} className={`copy-button ${isCopying ? 'copying' : ''}`}><FaCopy /></button> {/* Кнопка копирования с классом индикации */}
+        <button onClick={copyToClipboard} className={`copy-button ${isCopying ? 'copying' : ''}`}><FaCopy /></button>
       </div>
       <AceEditor
         ref={editorRef}

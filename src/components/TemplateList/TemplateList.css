@@ -1,0 +1,120 @@
+.template-list-panel {
+    position: fixed;
+    top: 0;
+    left: -290px;
+    width: 250px;
+    height: 100%;
+    padding: 20px;
+    background-color: #22292d;
+    border: 1px solid #444;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1002;
+}
+  
+.template-list-panel.open {
+    left: 0;
+}
+
+.template-item {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 15px; 
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #333;
+    cursor: pointer;
+}
+
+.template-preview {
+    width: 100%;
+    height: 300px; /* Задайте высоту по вашему предпочтению */
+    overflow: hidden;
+    position: relative;
+}
+
+.template-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none; /* Чтобы iframe не был интерактивным */
+}
+  
+.template-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.template-list-toggle-button {
+    position: absolute;
+    right: -82px;
+    bottom: 290px; 
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    z-index: 1000;
+    transform: rotate(90deg);
+}
+
+.template-list-toggle-button:hover {
+    background-color: #40a9ff;
+}
+
+.text-color {
+    color: #b6b8ba;
+}
+
+.red-button {
+    padding: 10px 15px;
+    background-color: #dc0404;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.configurator-toggle-button {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.configurator-toggle-button:hover {
+    background-color: #40a9ff;
+}
+
+  
+.template-preview {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.template-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transform-origin: top left;
+    pointer-events: none; 
+}
+
+
+
+  
+  
+  
+  

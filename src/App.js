@@ -11,6 +11,7 @@ import AddLocaleModal from './components/AddLocaleModal/AddLocaleModal';
 import EditLocaleModal from './components/EditLocaleModal/EditLocaleModal';
 import BrandConfigurator from './components/BrandConfigurator/BrandConfigurator';
 import BrandList from './components/BrandList/BrandList';
+import TemplateList from './components/TemplateList/TemplateList';
 import { getSettings, saveSettings } from './utils/indexedDB';
 import { runInAction } from 'mobx';
 import { replacePlaceholders } from './utils/replacePlaceholders';
@@ -32,6 +33,8 @@ const App = observer(() => {
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [brands, setBrands] = useState([]);
   const [brandToEdit, setBrandToEdit] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null); // Добавляем состояние для выбранного шаблона
+
   // eslint-disable-next-line
   const [currentBrand, setCurrentBrand] = useState(null);
 
@@ -160,6 +163,11 @@ const App = observer(() => {
     appStore.handleFolderSelection(folderName, setButtonColor);
   };
 
+  const handleApplyTemplate = (templateContent) => {
+  console.log("Applying template:", templateContent);
+  setSelectedTemplate(templateContent); // Используем только содержимое шаблона
+};
+
   return (
     <div className="App">
       {appStore.editLocaleModalVisible && (
@@ -228,7 +236,12 @@ const App = observer(() => {
       </div>
 
       <div className="content-area">
-        <PdfMaker html={appStore.html} setHtml={appStore.setHtml.bind(appStore)} highlightedText={appStore.highlightedText} />
+        <PdfMaker
+          html={appStore.html}
+          setHtml={appStore.setHtml.bind(appStore)}
+          highlightedText={appStore.highlightedText}
+          selectedTemplate={selectedTemplate} // Передаем выбранный шаблон
+        />
         <HtmlWindow htmlContent={appStore.html} onElementClick={(text) => appStore.setHighlightedText(text)} />
       </div>
       <div className="buttons-area">
@@ -262,6 +275,9 @@ const App = observer(() => {
           }}
         />
       </div>
+
+      {/* Передача функции для применения шаблона */}
+      <TemplateList onApplyTemplate={handleApplyTemplate} />
     </div>
   );
 });
