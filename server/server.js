@@ -37,9 +37,8 @@ app.post('/generate-pdf', async (req, res) => {
         '--single-process',
         '--disable-gpu'
       ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     });
-
+ 
     const page = await browser.newPage();
     await page.setContent(req.body, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({ format: 'A4', printBackground: true });
@@ -52,6 +51,7 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).send("Failed to generate PDF: " + error.message);
   }
 });
+
 
 // Эндпоинт для получения всех брендов
 app.get('/api/brands', (req, res) => {
