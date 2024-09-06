@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 const brandsFilePath = path.join(__dirname, 'brands.json');
-const templatesFilePath = path.join(__dirname, 'templates.json'); // Новый файл для хранения шаблонов
+const templatesFilePath = path.join(__dirname, 'templates.json'); 
 
 app.use(express.static('build'));
 app.use(express.json());

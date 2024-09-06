@@ -71,6 +71,7 @@ const TemplateList = ({ onApplyTemplate }) => {
 
   return (
     <div className={`template-list-panel ${isTemplateListOpen ? 'open' : ''}`}>
+    <div className='scroll'>
       <button className="template-list-toggle-button" onClick={toggleTemplateList}>
         {isTemplateListOpen ? 'Hide Templates' : 'Show Templates'}
       </button>
@@ -109,6 +110,7 @@ const TemplateList = ({ onApplyTemplate }) => {
       )}
 
       {isModalOpen && <UploadTemplateModal onClose={() => setIsModalOpen(false)} onSave={handleAddTemplate} />}
+      </div>
     </div>
   );
 };

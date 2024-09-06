@@ -19,6 +19,7 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
 
   return (
     <div className={`brand-list-panel ${isBrandListOpen ? 'open' : ''}`}>
+    <div className='scroll'>
       <button className="brand-list-toggle-button" onClick={toggleBrandList}>
         {isBrandListOpen ? 'Hide Brands' : 'Show Brands'}
       </button>
@@ -44,7 +45,7 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
                 {brand.brandName}
               </button>
               <button className='blue-button middle-button' onClick={() => onEditBrand(brand)}>
-                Edit
+                Copy
               </button>
               <button className='blue-button right-button' onClick={() => onDelete(index)}>
                 ×
@@ -59,6 +60,7 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
       <button className="configurator-toggle-button" onClick={toggleConfigurator}>
         {isConfiguratorOpen ? 'Close' : 'Create new brand'}
       </button>
+      </div>
     </div>
   );
 };

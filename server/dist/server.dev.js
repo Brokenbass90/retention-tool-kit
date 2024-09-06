@@ -13,8 +13,7 @@ var request = require('request');
 var app = express();
 var port = process.env.PORT || 3001;
 var brandsFilePath = path.join(__dirname, 'brands.json');
-var templatesFilePath = path.join(__dirname, 'templates.json'); // Новый файл для хранения шаблонов
-
+var templatesFilePath = path.join(__dirname, 'templates.json');
 app.use(express["static"]('build'));
 app.use(express.json());
 app.use(express.text({
