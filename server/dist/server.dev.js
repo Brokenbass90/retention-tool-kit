@@ -37,56 +37,54 @@ app.post('/generate-pdf', function _callee(req, res) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          console.log("Received HTML content:", req.body);
-          _context.next = 4;
+          _context.next = 3;
           return regeneratorRuntime.awrap(puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote', '--single-process', '--disable-gpu']
           }));
 
-        case 4:
+        case 3:
           browser = _context.sent;
-          _context.next = 7;
+          _context.next = 6;
           return regeneratorRuntime.awrap(browser.newPage());
 
-        case 7:
+        case 6:
           page = _context.sent;
-          _context.next = 10;
+          _context.next = 9;
           return regeneratorRuntime.awrap(page.setContent(req.body, {
             waitUntil: 'networkidle0'
           }));
 
-        case 10:
-          _context.next = 12;
+        case 9:
+          _context.next = 11;
           return regeneratorRuntime.awrap(page.pdf({
             format: 'A4',
             printBackground: true
           }));
 
-        case 12:
+        case 11:
           pdf = _context.sent;
-          _context.next = 15;
+          _context.next = 14;
           return regeneratorRuntime.awrap(browser.close());
 
-        case 15:
-          console.log("PDF generated successfully.");
+        case 14:
           res.contentType('application/pdf');
           res.send(pdf);
-          _context.next = 24;
+          _context.next = 22;
           break;
 
-        case 20:
-          _context.prev = 20;
+        case 18:
+          _context.prev = 18;
           _context.t0 = _context["catch"](0);
           console.error("Error generating PDF: ", _context.t0);
           res.status(500).send("Failed to generate PDF: " + _context.t0.message);
 
-        case 24:
+        case 22:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 20]]);
+  }, null, null, [[0, 18]]);
 }); // Эндпоинт для получения всех брендов
 
 app.get('/api/brands', function (req, res) {

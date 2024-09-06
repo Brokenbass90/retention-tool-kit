@@ -25,8 +25,6 @@ app.use((req, res, next) => {
 // Генерация PDF
 app.post('/generate-pdf', async (req, res) => {
   try {
-    console.log("Received HTML content:", req.body);
-
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -38,7 +36,7 @@ app.post('/generate-pdf', async (req, res) => {
         '--no-zygote',
         '--single-process',
         '--disable-gpu'
-      ],
+      ]
     });
 
     const page = await browser.newPage();
@@ -46,7 +44,6 @@ app.post('/generate-pdf', async (req, res) => {
     const pdf = await page.pdf({ format: 'A4', printBackground: true });
     await browser.close();
 
-    console.log("PDF generated successfully.");
     res.contentType('application/pdf');
     res.send(pdf);
   } catch (error) {
