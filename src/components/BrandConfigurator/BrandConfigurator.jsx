@@ -19,6 +19,8 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
   const [paddingM, setPaddingM] = useState('');
   const [paddingS, setPaddingS] = useState('');
   const [paddingXs, setPaddingXs] = useState('');
+  const [refColor, setRefColor] = useState('');
+  const [leftBorderColor, setLeftBorderColor] = useState('');
 
   useEffect(() => {
     if (brandToEdit) {
@@ -39,6 +41,8 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
       setPaddingM(brandToEdit.styles.padding_m || '');
       setPaddingS(brandToEdit.styles.padding_s || '');
       setPaddingXs(brandToEdit.styles.padding_xs || '');
+      setRefColor(brandToEdit.styles.ref_color || '');
+      setLeftBorderColor(brandToEdit.styles.left_border_color || '');
     } else {
       clearFields();
     }
@@ -62,6 +66,9 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
     setPaddingM('');
     setPaddingS('');
     setPaddingXs('');
+    setRefColor('');
+    setLeftBorderColor('');
+
   };
 
   const handleSave = async () => {
@@ -89,6 +96,8 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
         padding_m: paddingM,
         padding_s: paddingS,
         padding_xs: paddingXs,
+        ref_color: refColor,
+        left_border_color: leftBorderColor,
       },
     };
   
@@ -117,6 +126,12 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
       <div className="brand-configurator">
         <h2>{brandToEdit ? 'Edit Brand' : 'Create Brand'}</h2>
         <div className="input-group">
+        <input
+            type="text"
+            placeholder="Logo URL"
+            value={logoEmailBrand}
+            onChange={(e) => setLogoEmailBrand(e.target.value)}
+          />
           <input
             type="text"
             placeholder="Brand Name"
@@ -191,12 +206,6 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
           />
           <input
             type="text"
-            placeholder="Logo URL"
-            value={logoEmailBrand}
-            onChange={(e) => setLogoEmailBrand(e.target.value)}
-          />
-          <input
-            type="text"
             placeholder="Padding L"
             value={paddingL}
             onChange={(e) => setPaddingL(e.target.value)}
@@ -218,6 +227,18 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
             placeholder="Padding XS"
             value={paddingXs}
             onChange={(e) => setPaddingXs(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="ref color"
+            value={refColor}
+            onChange={(e) => setRefColor(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="left border color"
+            value={leftBorderColor}
+            onChange={(e) => setLeftBorderColor(e.target.value)}
           />
         </div>
         <button onClick={handleSave}>{brandToEdit ? 'Save Changes' : 'Save'}</button>

@@ -137,11 +137,14 @@ const App = observer(() => {
       padding_m: brand.styles.padding_m,
       padding_s: brand.styles.padding_s,
       padding_xs: brand.styles.padding_xs,
-    };
+      ref_color: brand.styles.ref_color,
+      left_border_color: brand.styles.left_border_color,
 
+    };
     appStore.currentStyles = placeholders;
     const contentToApply = appStore.currentLocaleContent || appStore.originalHtml;
 
+  
     if (contentToApply) {
       runInAction(() => {
         appStore.html = combineHtmlAndStyles(contentToApply, appStore.currentStyles);
@@ -164,8 +167,8 @@ const App = observer(() => {
   };
 
   const handleApplyTemplate = (templateContent) => {
-  console.log("Applying template:", templateContent);
-  setSelectedTemplate(templateContent); // Используем только содержимое шаблона
+  // console.log("Applying template:", templateContent);
+  setSelectedTemplate(templateContent); 
 };
 
   return (
@@ -276,7 +279,6 @@ const App = observer(() => {
         />
       </div>
 
-      {/* Передача функции для применения шаблона */}
       <TemplateList onApplyTemplate={handleApplyTemplate} />
     </div>
   );

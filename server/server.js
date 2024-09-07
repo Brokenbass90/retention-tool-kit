@@ -122,7 +122,6 @@ app.delete('/api/brands/:brandName', (req, res) => {
   });
 });
 
-// Новый функционал для работы с шаблонами
 
 // Эндпоинт для получения всех шаблонов
 app.get('/api/templates', (req, res) => {

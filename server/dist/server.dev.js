@@ -165,8 +165,7 @@ app["delete"]('/api/brands/:brandName', function (req, res) {
       });
     });
   });
-}); // Новый функционал для работы с шаблонами
-// Эндпоинт для получения всех шаблонов
+}); // Эндпоинт для получения всех шаблонов
 
 app.get('/api/templates', function (req, res) {
   fs.readFile(templatesFilePath, 'utf8', function (err, data) {
