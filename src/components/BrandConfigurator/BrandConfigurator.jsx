@@ -21,6 +21,9 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
   const [paddingXs, setPaddingXs] = useState('');
   const [refColor, setRefColor] = useState('');
   const [leftBorderColor, setLeftBorderColor] = useState('');
+  const [logoWidth, setLogoWidth] = useState('');
+  const [position, setPosition] = useState('');
+  const [borderRamka, setBorderRamka] = useState('');
 
   useEffect(() => {
     if (brandToEdit) {
@@ -43,6 +46,9 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
       setPaddingXs(brandToEdit.styles.padding_xs || '');
       setRefColor(brandToEdit.styles.ref_color || '');
       setLeftBorderColor(brandToEdit.styles.left_border_color || '');
+      setLogoWidth(brandToEdit.styles.logo_width || '');
+      setPosition(brandToEdit.styles.position || '');
+      setBorderRamka(brandToEdit.styles.border_ramka || '');
     } else {
       clearFields();
     }
@@ -68,6 +74,9 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
     setPaddingXs('');
     setRefColor('');
     setLeftBorderColor('');
+    setLogoWidth('');
+    setPosition('');
+    setBorderRamka('');
 
   };
 
@@ -98,6 +107,9 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
         padding_xs: paddingXs,
         ref_color: refColor,
         left_border_color: leftBorderColor,
+        logo_width: logoWidth,
+        position: position,
+        border_ramka: borderRamka,
       },
     };
   
@@ -131,6 +143,18 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
             placeholder="Logo URL"
             value={logoEmailBrand}
             onChange={(e) => setLogoEmailBrand(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Logo Width"
+            value={logoWidth}
+            onChange={(e) => setLogoWidth(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
           />
           <input
             type="text"
@@ -239,6 +263,12 @@ const BrandConfigurator = ({ onCancel, isOpen, onSave, brandToEdit }) => {
             placeholder="left border color"
             value={leftBorderColor}
             onChange={(e) => setLeftBorderColor(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Border Ramka"
+            value={borderRamka}
+            onChange={(e) => setBorderRamka(e.target.value)}
           />
         </div>
         <button onClick={handleSave}>{brandToEdit ? 'Save Changes' : 'Save'}</button>

@@ -139,7 +139,9 @@ const App = observer(() => {
       padding_xs: brand.styles.padding_xs,
       ref_color: brand.styles.ref_color,
       left_border_color: brand.styles.left_border_color,
-
+      logo_width: brand.styles.logo_width,
+      position: brand.styles.position,
+      border_ramka: brand.styles.border_ramka,
     };
     appStore.currentStyles = placeholders;
     const contentToApply = appStore.currentLocaleContent || appStore.originalHtml;

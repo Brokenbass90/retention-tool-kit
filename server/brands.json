@@ -19,7 +19,10 @@
       "padding_s": "12px",
       "padding_xs": "6px",
       "ref_color": "#4882ff",
-      "left_border_color": "#5165ff"
+      "left_border_color": "#5165ff",
+      "logo_width": "136px",
+      "position": "center",
+      "border_ramka": "none"
     }
   },
   {
@@ -42,8 +45,36 @@
       "padding_s": "10px",
       "padding_xs": "6px",
       "ref_color": "#0074cc",
-      "left_border_color": "#5165ff"
+      "left_border_color": "#5165ff",
+      "logo_width": "167px",
+      "position": "center",
+      "border_ramka": "none"
+    }
+  },
+  {
+    "brandName": "Quadcode Markets",
+    "styles": {
+      "brand_color": "#0081e3",
+      "brand_additional_color": "#f4f6fa",
+      "on_brand_color": "#ffffff",
+      "surface_color": "#ffffff",
+      "surface_variant_color": "none",
+      "on_surface_color": "#3e414b",
+      "background_color": "#f5f9ff",
+      "accent_color": "#0081e3",
+      "button_radius": "5px",
+      "small_radius": "10px",
+      "large_radius": "12px",
+      "logo_email_brand": "https://fsms.quadcode.com/storage/public/cm/1f/kj285cee2vclv6kg/qcm-shadow.png",
+      "padding_l": "32px",
+      "padding_m": "20px",
+      "padding_s": "10px",
+      "padding_xs": "6px",
+      "ref_color": "#2d51b6",
+      "left_border_color": "#0081e3",
+      "logo_width": "150px",
+      "position": "left",
+      "border_ramka": "1px"
     }
   }
-
 ]
