@@ -45,7 +45,7 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
                 {brand.brandName}
               </button>
               <button className='blue-button middle-button' onClick={() => onEditBrand(brand)}>
-                Copy
+                Edit
               </button>
               <button className='blue-button right-button' onClick={() => onDelete(index)}>
                 ×
