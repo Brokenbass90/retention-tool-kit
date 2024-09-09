@@ -8,6 +8,7 @@ import { FaCompress, FaExchangeAlt, FaArrowsAlt, FaCopy } from 'react-icons/fa';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/ext-searchbox'; // Добавляем расширение для поиска и замены
 import 'ace-builds/src-noconflict/snippets/html';
 
 const PdfMaker = observer(({ selectedTemplate }) => {
@@ -53,8 +54,6 @@ const PdfMaker = observer(({ selectedTemplate }) => {
       appStore.setOriginalHtml(selectedTemplate);
     }
   }, [selectedTemplate]);
-  
-  
 
   const handleCodeChange = (newHtml) => {
     if (newHtml !== appStore.html) {
@@ -85,8 +84,23 @@ const PdfMaker = observer(({ selectedTemplate }) => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    // Открываем окно поиска по нажатию Cmd + F
+    if (e.metaKey && e.key === 'f') {
+      e.preventDefault();
+      const editor = editorRef.current?.editor;
+      if (editor) {
+        editor.execCommand('find');
+      }
+    }
+  };
+
   return (
-    <div className={`pdf-maker ${isFullscreen ? 'fullscreen' : ''}`}>
+    <div 
+      className={`pdf-maker ${isFullscreen ? 'fullscreen' : ''}`}
+      onKeyDown={handleKeyDown} // Обработчик для поиска
+      tabIndex={0} // Добавляем tabIndex для получения фокуса на div
+    >
       <div className="toolbar">
         <button onClick={toggleWrap} className="toolbar-button"><FaExchangeAlt /></button>
         <button onClick={toggleFullscreen} className="fullscreen-button">{isFullscreen ? <FaCompress /> : <FaArrowsAlt />}</button>
