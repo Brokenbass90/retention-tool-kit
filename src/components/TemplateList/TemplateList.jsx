@@ -8,6 +8,7 @@ const TemplateList = ({ onApplyTemplate }) => {
   const [isTemplateListOpen, setIsTemplateListOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchTemplates();
@@ -80,56 +81,69 @@ const TemplateList = ({ onApplyTemplate }) => {
     setIsTemplateListOpen(!isTemplateListOpen);
   };
 
+  const filteredTemplates = templates.filter(template =>
+    template.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className={`template-list-panel ${isTemplateListOpen ? 'open' : ''}`}>
-    <div className='scroll'>
-      <button className="template-list-toggle-button" onClick={toggleTemplateList}>
-        {isTemplateListOpen ? 'Hide Templates' : 'Show Templates'}
-      </button>
-
-      {isTemplateListOpen && templates.length > 0 ? (
-        templates.map((template, index) => (
-            <div key={index} className="template-item" onClick={() => onApplyTemplate(template.content)}>
-            <div className='template-preview'>
-              <iframe
-                srcDoc={`<div style="zoom: 0.5; transform-origin: top left;">${template.content}</div>`}
-                title={`preview-${template.name}`}
-                className="template-preview-iframe"
-              />
-            </div>
-            <div className='template-buttons'>
-              <span className="template-name">{template.name}</span> 
-              <button
-                className='blue-button right-button'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(template.name);
-                }}
-              >
-                ×
-              </button>
-              
-            </div>
-          </div>
-        ))
-      ) : (
-        isTemplateListOpen && <p className='text-color'>No templates available</p>
-      )}
-
-      {isTemplateListOpen && (
-        <button className="configurator-toggle-button" onClick={() => setIsModalOpen(true)}>
-          Add New Template
+      <div className='scroll'>
+        <button className="template-list-toggle-button" onClick={toggleTemplateList}>
+          {isTemplateListOpen ? 'Hide Templates' : 'Show Templates'}
         </button>
-      )}
 
-      {isModalOpen && <UploadTemplateModal onClose={() => setIsModalOpen(false)} onSave={handleAddTemplate} />}
-      {templateToDelete && (
-        <ConfirmDeleteModal
-          message={`Are you sure you want to delete the template "${templateToDelete}"?`}
-          onClose={() => setTemplateToDelete(null)}
-          onConfirm={handleConfirmDelete}
-        />
-      )}
+        {isTemplateListOpen && (
+          <input
+            type="text"
+            placeholder="Search templates..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+        )}
+
+        {isTemplateListOpen && filteredTemplates.length > 0 ? (
+          filteredTemplates.map((template, index) => (
+            <div key={index} className="template-item" onClick={() => onApplyTemplate(template.content)}>
+              <div className='template-preview'>
+                <iframe
+                  srcDoc={`<div style="zoom: 0.5; transform-origin: top left;">${template.content}</div>`}
+                  title={`preview-${template.name}`}
+                  className="template-preview-iframe"
+                />
+              </div>
+              <div className='template-buttons'>
+                <span className="template-name">{template.name}</span> 
+                <button
+                  className='blue-button right-button'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClick(template.name);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          isTemplateListOpen && <p className='text-color'>No templates available</p>
+        )}
+
+        {isTemplateListOpen && (
+          <button className="configurator-toggle-button" onClick={() => setIsModalOpen(true)}>
+            Add New Template
+          </button>
+        )}
+
+        {isModalOpen && <UploadTemplateModal onClose={() => setIsModalOpen(false)} onSave={handleAddTemplate} />}
+        {templateToDelete && (
+          <ConfirmDeleteModal
+            message={`Are you sure you want to delete the template "${templateToDelete}"?`}
+            onClose={() => setTemplateToDelete(null)}
+            onConfirm={handleConfirmDelete}
+          />
+        )}
       </div>
     </div>
   );
