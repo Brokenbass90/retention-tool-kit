@@ -50,7 +50,7 @@ const PdfMaker = observer(({ selectedTemplate }) => {
 
   useEffect(() => {
     if (selectedTemplate) {
-      console.log("Selected template in PdfMaker:", selectedTemplate);
+      
       appStore.setOriginalHtml(selectedTemplate);
     }
   }, [selectedTemplate]);
