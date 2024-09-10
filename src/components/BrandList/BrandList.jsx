@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import './BrandList.css';
 import { appStore } from '../../stores/AppStore'; 
 import { runInAction } from 'mobx';
 
 const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfiguratorOpen, onEditBrand }) => {
   const [isBrandListOpen, setIsBrandListOpen] = useState(false);
+  const [brandToDelete, setBrandToDelete] = useState(null);
 
   const handleRestoreOriginalStyles = () => {
     runInAction(() => {
@@ -15,6 +17,17 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
 
   const toggleBrandList = () => {
     setIsBrandListOpen(!isBrandListOpen);
+  };
+
+  const handleDeleteClick = (brand, index) => {
+    setBrandToDelete({ brand, index });
+  };
+
+  const handleConfirmDelete = () => {
+    if (brandToDelete) {
+      onDelete(brandToDelete.index);
+      setBrandToDelete(null);
+    }
   };
 
   return (
@@ -47,7 +60,7 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
               <button className='blue-button middle-button' onClick={() => onEditBrand(brand)}>
                 Edit
               </button>
-              <button className='blue-button right-button' onClick={() => onDelete(index)}>
+              <button className='blue-button right-button' onClick={() => handleDeleteClick(brand, index)}>
                 ×
               </button>
             </div>
@@ -61,6 +74,14 @@ const BrandList = ({ brands, onDelete, onApplyBrand, toggleConfigurator, isConfi
         {isConfiguratorOpen ? 'Close' : 'Create new brand'}
       </button>
       </div>
+
+      {brandToDelete && (
+        <ConfirmDeleteModal
+          message={`Are you sure you want to delete the brand "${brandToDelete.brand.brandName}"?`}
+          onClose={() => setBrandToDelete(null)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </div>
   );
 };

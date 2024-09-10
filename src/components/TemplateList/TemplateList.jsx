@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import UploadTemplateModal from '../UploadTemplateModal/UploadTemplateModal';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import './TemplateList.css';
 
 const TemplateList = ({ onApplyTemplate }) => {
   const [templates, setTemplates] = useState([]);
   const [isTemplateListOpen, setIsTemplateListOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState(null);
 
   useEffect(() => {
     fetchTemplates();
@@ -42,17 +44,28 @@ const TemplateList = ({ onApplyTemplate }) => {
     }
   };
 
+  const handleDeleteClick = (templateName) => {
+    setTemplateToDelete(templateName);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (templateToDelete) {
+      await handleDeleteTemplate(templateToDelete);
+      setTemplateToDelete(null);
+    }
+  };
+
   const handleDeleteTemplate = async (templateName) => {
     if (!templateName) {
       console.error('Template name is undefined');
       return;
     }
-  
+
     try {
       const response = await fetch(`/api/templates/${encodeURIComponent(templateName)}`, {
         method: 'DELETE',
       });
-  
+
       if (response.ok) {
         fetchTemplates();
       } else {
@@ -62,8 +75,6 @@ const TemplateList = ({ onApplyTemplate }) => {
       console.error('Error deleting template:', error);
     }
   };
-  
-  
 
   const toggleTemplateList = () => {
     setIsTemplateListOpen(!isTemplateListOpen);
@@ -87,15 +98,17 @@ const TemplateList = ({ onApplyTemplate }) => {
               />
             </div>
             <div className='template-buttons'>
+              <span className="template-name">{template.name}</span> 
               <button
                 className='blue-button right-button'
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDeleteTemplate(template.name);
+                  handleDeleteClick(template.name);
                 }}
               >
                 ×
               </button>
+              
             </div>
           </div>
         ))
@@ -110,6 +123,13 @@ const TemplateList = ({ onApplyTemplate }) => {
       )}
 
       {isModalOpen && <UploadTemplateModal onClose={() => setIsModalOpen(false)} onSave={handleAddTemplate} />}
+      {templateToDelete && (
+        <ConfirmDeleteModal
+          message={`Are you sure you want to delete the template "${templateToDelete}"?`}
+          onClose={() => setTemplateToDelete(null)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
       </div>
     </div>
   );
