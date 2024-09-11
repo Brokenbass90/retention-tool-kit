@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import './HtmlWindow.css';
 
 const HtmlWindow = ({ htmlContent, onElementClick }) => {
   const iframeRef = useRef(null);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const updateIframeContent = useCallback(() => {
     const iframe = iframeRef.current;
@@ -29,7 +30,7 @@ const HtmlWindow = ({ htmlContent, onElementClick }) => {
       event.preventDefault();
       const targetElement = event.target;
       if (targetElement && (targetElement.innerText || targetElement.textContent)) {
-        onElementClick(targetElement.innerText || targetElement.textContent); // Передаем текст в AppStore
+        onElementClick(targetElement.innerText || targetElement.textContent);
       }
     };
 
@@ -43,10 +44,18 @@ const HtmlWindow = ({ htmlContent, onElementClick }) => {
 
   return (
     <div className="preview-container">
-      <iframe ref={iframeRef} title="HTML Preview"></iframe>
+      <div className="view-buttons">
+        <button onClick={() => setIsMobileView(false)} className={!isMobileView ? 'active' : ''}>Desktop</button>
+        <button onClick={() => setIsMobileView(true)} className={isMobileView ? 'active' : ''}>Mobile</button>
+      </div>
+      <iframe 
+        ref={iframeRef} 
+        title="HTML Preview" 
+        className={isMobileView ? 'mobile-view' : 'desktop-view'}
+      ></iframe>
+  
     </div>
   );
 };
 
 export default HtmlWindow;
-
