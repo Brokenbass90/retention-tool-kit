@@ -174,17 +174,38 @@ class AppStore {
     });
   }
 
+  // updateHtmlForLocale(locale) {
+  //   let updatedHtml = this.originalHtml;
+  //   console.log("Initial HTML:", updatedHtml); // Отладка
+
+  //   Object.keys(this.foldersData).forEach(folderName => {
+  //     if (this.foldersData[folderName][locale]) {
+  //       updatedHtml = replacePlaceholders(updatedHtml, this.foldersData[folderName][locale], folderName, locale);
+  //       console.log(`HTML after applying folder ${folderName}:`, updatedHtml); // Отладка
+  //     }
+  //   });
+
+  //   runInAction(() => {
+  //     this.htmlByLocale[locale] = updatedHtml;
+  //     if (locale === this.selectedLocale) {
+  //       this.html = updatedHtml;
+  //       console.log("Final HTML for locale:", locale, updatedHtml); // Отладка
+  //     }
+  //   });
+  // }
+
+  
   updateHtmlForLocale(locale) {
     let updatedHtml = this.originalHtml;
     console.log("Initial HTML:", updatedHtml); // Отладка
-
+  
     Object.keys(this.foldersData).forEach(folderName => {
       if (this.foldersData[folderName][locale]) {
         updatedHtml = replacePlaceholders(updatedHtml, this.foldersData[folderName][locale], folderName, locale);
         console.log(`HTML after applying folder ${folderName}:`, updatedHtml); // Отладка
       }
     });
-
+  
     runInAction(() => {
       this.htmlByLocale[locale] = updatedHtml;
       if (locale === this.selectedLocale) {
@@ -193,9 +214,6 @@ class AppStore {
       }
     });
   }
-
-  
-  
 
   updateHtmlForAllLocales() {
     Object.keys(this.htmlByLocale).forEach(locale => {
@@ -283,6 +301,8 @@ class AppStore {
     }
     return data;
   }
+
+  
   
 }
 

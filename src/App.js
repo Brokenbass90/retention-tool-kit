@@ -27,6 +27,7 @@ export const combineHtmlAndStyles = (htmlContent, styles) => {
   return updatedHtml;
 };
 
+
 const App = observer(() => {
   const [buttonColors, setButtonColors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -174,6 +175,7 @@ const App = observer(() => {
   // console.log("Applying template:", templateContent);
   setSelectedTemplate(templateContent); 
 };
+
 
   return (
     <div className="App">
