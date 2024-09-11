@@ -42,7 +42,32 @@ iframe.mobile-view {
   height: 667px !important; 
   border: 1px solid #ccc;
   display: block !important;
-  margin: 20px auto 0 !important;
-  border-radius: 20px !important;
+  border-radius: 16px !important; 
 }
 
+iframe{
+  box-sizing: border-box;
+}
+.iphone100{
+  height: 100%;
+  width: 100%;
+}
+.iphone{
+  width: 375px; 
+  height: 667px ; 
+  padding: 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0) 50%), #000; 
+  margin: 20px auto 0 !important;
+  border-radius: 20px !important; 
+  display: flex;
+  justify-content: center;
+}
+.chelka{
+  position: absolute;
+  margin: 0 auto;
+  width: 100px;
+  height: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0) 50%), #000; 
+  left: center;
+  border-radius: 0 0 8px 8px;
+}

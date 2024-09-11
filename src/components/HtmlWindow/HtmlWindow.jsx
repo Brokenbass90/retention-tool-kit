@@ -48,11 +48,15 @@ const HtmlWindow = ({ htmlContent, onElementClick }) => {
         <button onClick={() => setIsMobileView(false)} className={!isMobileView ? 'active' : ''}>Desktop</button>
         <button onClick={() => setIsMobileView(true)} className={isMobileView ? 'active' : ''}>Mobile</button>
       </div>
+      <div className={isMobileView ? 'iphone' : 'iphone100'}>
+      <div className={isMobileView ? 'chelka' : ''} ></div>
       <iframe 
         ref={iframeRef} 
         title="HTML Preview" 
         className={isMobileView ? 'mobile-view' : 'desktop-view'}
       ></iframe>
+      </div>
+      
   
     </div>
   );
