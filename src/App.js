@@ -104,20 +104,22 @@ const App = observer(() => {
 
   const handleLocaleSelection = (locale) => {
     let updatedHtml = appStore.originalHtml;
-
+  
     Object.keys(appStore.foldersData).forEach(folderName => {
       if (appStore.foldersData[folderName][locale]) {
-        updatedHtml = replacePlaceholders(updatedHtml, appStore.foldersData[folderName][locale], folderName);
+        updatedHtml = replacePlaceholders(updatedHtml, appStore.foldersData[folderName][locale], folderName, locale);
       }
     });
-
+  
     appStore.currentLocaleContent = updatedHtml;
-
+  
     runInAction(() => {
       appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
       appStore.selectedLocale = locale;
     });
   };
+  
+  
 
   const handleApplyBrand = (brand) => {
     const placeholders = {
