@@ -6,7 +6,7 @@ class AppStore {
   originalHtml = '';
   html = '';
   currentLocaleContent = '';  
-  currentStyles = ''; 
+  currentStyles = {}; 
   htmlByLocale = {};
   foldersData = {};
   selectedFolder = 'defaultFolder';

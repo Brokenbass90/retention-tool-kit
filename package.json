@@ -59,11 +59,16 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "gh-pages": "^6.1.1",
     "react-app-rewired": "^2.2.1",
     "stylelint": "^16.8.2",
-    "stylelint-config-standard": "^36.0.1"
+    "stylelint-config-standard": "^36.0.1",
+    "typescript": "^5.8.2"
   }
 }

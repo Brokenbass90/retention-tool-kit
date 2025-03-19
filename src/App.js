@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import PdfMaker from './components/PdfMaker/PdfMaker.jsx';
-import HtmlWindow from './components/HtmlWindow/HtmlWindow.jsx';
+import PdfMaker from './components/PdfMaker/PdfMaker';
+import HtmlWindow from './components/HtmlWindow/HtmlWindow';
 import ConvertButton from './components/ConvertButton/ConvertButton';
-import TxtToJson from './components/TxtToJson/TxtToJson.jsx';
-import FileUploader from './components/FileUploader/FileUploader.jsx';
+import TxtToJson from './components/TxtToJson/TxtToJson';
+import FileUploader from './components/FileUploader/FileUploader';
 import { appStore } from './stores/AppStore';
 import './App.css';
 import AddLocaleModal from './components/AddLocaleModal/AddLocaleModal';
