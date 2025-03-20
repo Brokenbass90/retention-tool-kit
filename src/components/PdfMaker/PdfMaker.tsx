@@ -67,7 +67,7 @@ const PdfMaker: React.FC<PdfMakerProps> = observer(({ selectedTemplate }) => {
 
   const handleCodeChange = (newHtml: string): void => {
     if (newHtml !== appStore.html) {
-      appStore.setOriginalHtml(newHtml);
+      appStore.setHtml(newHtml);
     }
   };
 

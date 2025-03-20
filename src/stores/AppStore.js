@@ -17,10 +17,80 @@ class AppStore {
   showTxtToJson = false;
   editLocaleModalVisible = false;
   localeToEdit = null;
+  tempHtml = null;
+  hasUnsavedChanges = false;
+  modifiedLocales = new Set();
+
+  constructor() {
+    makeAutoObservable(this, {}, { autoBind: true });
+    this.loadInitialData();
+  }
 
   setHtml(html) {
     runInAction(() => {
       this.html = html;
+      if (!this.isOriginalSelected) {
+        this.hasUnsavedChanges = true;
+      } else {
+        this.originalHtml = html;
+      }
+    });
+  }
+
+  applyChanges() {
+    runInAction(() => {
+      if (!this.isOriginalSelected) {
+        this.htmlByLocale[this.selectedLocale] = this.html;
+        this.modifiedLocales.add(this.selectedLocale);
+        this.hasUnsavedChanges = false;
+        this.saveAllData();
+      }
+    });
+  }
+
+  discardChanges() {
+    runInAction(() => {
+      this.hasUnsavedChanges = false;
+      this.updateHtmlForLocale(this.selectedLocale);
+    });
+  }
+
+  resetLocaleToOriginal(locale) {
+    runInAction(() => {
+      if (this.modifiedLocales.has(locale)) {
+        this.modifiedLocales.delete(locale);
+        delete this.htmlByLocale[locale];
+        if (locale === this.selectedLocale) {
+          this.updateHtmlForLocale(locale);
+        }
+        this.saveAllData();
+      }
+    });
+  }
+
+  handleLocaleSelection(locale) {
+    if (this.hasUnsavedChanges) {
+      // Возвращаем промис для обработки ответа пользователя в UI
+      return new Promise((resolve) => {
+        if (window.confirm('У вас есть несохраненные изменения. Сохранить перед переключением?')) {
+          this.applyChanges();
+        } else {
+          this.discardChanges();
+        }
+        this._switchLocale(locale);
+        resolve();
+      });
+    } else {
+      this._switchLocale(locale);
+      return Promise.resolve();
+    }
+  }
+
+  _switchLocale(locale) {
+    runInAction(() => {
+      this.selectedLocale = locale;
+      this.isOriginalSelected = false;
+      this.updateHtmlForLocale(locale);
     });
   }
 
@@ -45,12 +115,6 @@ class AppStore {
       this.updateHtmlForAllLocales();
       this.editLocaleModalVisible = false;
     });
-  }
-
-
-  constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
-    this.loadInitialData();
   }
 
   async loadInitialData() {
@@ -98,9 +162,9 @@ class AppStore {
   setOriginalHtml(html) {
     runInAction(() => {
       this.originalHtml = html;
-      this.html = html;
-      this.updateHtmlForAllLocales();
-      this.saveAllData();
+      if (this.isOriginalSelected) {
+        this.html = html;
+      }
     });
   }
 
@@ -166,52 +230,23 @@ class AppStore {
     });
   }
 
-  handleLocaleSelection(locale) {
-    runInAction(() => {
-      this.selectedLocale = locale;
-      this.isOriginalSelected = false;
-      this.updateHtmlForLocale(locale);
-    });
-  }
-
-  // updateHtmlForLocale(locale) {
-  //   let updatedHtml = this.originalHtml;
-  //   console.log("Initial HTML:", updatedHtml); // Отладка
-
-  //   Object.keys(this.foldersData).forEach(folderName => {
-  //     if (this.foldersData[folderName][locale]) {
-  //       updatedHtml = replacePlaceholders(updatedHtml, this.foldersData[folderName][locale], folderName, locale);
-  //       console.log(`HTML after applying folder ${folderName}:`, updatedHtml); // Отладка
-  //     }
-  //   });
-
-  //   runInAction(() => {
-  //     this.htmlByLocale[locale] = updatedHtml;
-  //     if (locale === this.selectedLocale) {
-  //       this.html = updatedHtml;
-  //       console.log("Final HTML for locale:", locale, updatedHtml); // Отладка
-  //     }
-  //   });
-  // }
-
-  
   updateHtmlForLocale(locale) {
     let updatedHtml = this.originalHtml;
-    console.log("Initial HTML:", updatedHtml); // Отладка
-  
+
     Object.keys(this.foldersData).forEach(folderName => {
       if (this.foldersData[folderName][locale]) {
         updatedHtml = replacePlaceholders(updatedHtml, this.foldersData[folderName][locale], folderName, locale);
-        console.log(`HTML after applying folder ${folderName}:`, updatedHtml); // Отладка
       }
     });
-  
+
     runInAction(() => {
-      this.htmlByLocale[locale] = updatedHtml;
-      if (locale === this.selectedLocale) {
-        this.html = updatedHtml;
-        console.log("Final HTML for locale:", locale, updatedHtml); // Отладка
+      if (locale === '') {
+        this.html = this.originalHtml;
+        this.isOriginalSelected = true;
+      } else {
+        this.html = this.htmlByLocale[locale] || updatedHtml;
       }
+      this.hasUnsavedChanges = false;
     });
   }
 
@@ -301,9 +336,6 @@ class AppStore {
     }
     return data;
   }
-
-  
-  
 }
 
 export const appStore = new AppStore();

@@ -67,6 +67,9 @@ export interface AppStore {
   showTxtToJson: boolean;
   editLocaleModalVisible: boolean;
   localeToEdit: string | null;
+  tempHtml: string | null;
+  hasUnsavedChanges: boolean;
+  modifiedLocales: Set<string>;
   getLocaleData: (locale: string) => AppStoreData;
 }
 

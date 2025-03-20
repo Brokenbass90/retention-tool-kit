@@ -12,6 +12,7 @@ import EditLocaleModal from './components/EditLocaleModal/EditLocaleModal';
 import BrandConfigurator from './components/BrandConfigurator/BrandConfigurator';
 import BrandList from './components/BrandList/BrandList';
 import TemplateList from './components/TemplateList/TemplateList';
+import LocaleManager from './components/LocaleManager/LocaleManager';
 import { getSettings, saveSettings } from './utils/indexedDB';
 import { runInAction } from 'mobx';
 import { replacePlaceholders } from './utils/replacePlaceholders';
@@ -195,9 +196,8 @@ const App = observer(() => {
           className={`original-btn ${appStore.isOriginalSelected ? 'selected' : ''}`}
           onClick={() => {
             runInAction(() => {
-              appStore.currentLocaleContent = appStore.originalHtml;
-              appStore.html = combineHtmlAndStyles(appStore.currentLocaleContent, appStore.currentStyles);
               appStore.selectedLocale = '';
+              appStore.updateHtmlForLocale('');
             });
           }}
         >
@@ -208,24 +208,61 @@ const App = observer(() => {
           <div key={locale} className="locale-btn-container">
             <button
               onClick={() => {
-                handleLocaleSelection(locale);
-                appStore.isOriginalSelected = false;
+                appStore.handleLocaleSelection(locale);
               }}
               className={`locale-btn ${appStore.selectedLocale === locale && !appStore.isOriginalSelected ? 'selected' : ''}`}
             >
               {locale}
+              {appStore.modifiedLocales.has(locale) && (
+                <span className="modified-indicator" title="Локаль изменена">
+                  🔒
+                </span>
+              )}
             </button>
-            <button
-              className="edit-locale-btn"
-              onClick={() => appStore.openEditLocaleModal(locale)}
-            >
-              ✎
-            </button>
+            <div className="locale-actions">
+              <button
+                className="edit-locale-btn"
+                onClick={() => appStore.openEditLocaleModal(locale)}
+                title="Редактировать локаль"
+              >
+                ✎
+              </button>
+              {appStore.modifiedLocales.has(locale) && (
+                <button
+                  className="reset-locale-btn"
+                  onClick={() => {
+                    if (window.confirm(`Сбросить локаль "${locale}" к состоянию нулевой локали? Это действие нельзя отменить.`)) {
+                      appStore.resetLocaleToOriginal(locale);
+                    }
+                  }}
+                  title="Сбросить к нулевой локали"
+                >
+                  🔄
+                </button>
+              )}
+            </div>
           </div>
         ))}
 
         <button className="original-btn" onClick={() => setIsModalOpen(true)}>+</button>
       </div>
+
+      {appStore.hasUnsavedChanges && !appStore.isOriginalSelected && (
+        <div className="changes-toolbar">
+          <button
+            className="apply-changes-btn"
+            onClick={() => appStore.applyChanges()}
+          >
+            Сохранить изменения
+          </button>
+          <button
+            className="discard-changes-btn"
+            onClick={() => appStore.discardChanges()}
+          >
+            Отменить изменения
+          </button>
+        </div>
+      )}
 
       <div className="folder-bar">
         {Object.keys(appStore.foldersData).map((folderName) => (
