@@ -20,6 +20,7 @@ class AppStore {
   tempHtml = null;
   hasUnsavedChanges = false;
   modifiedLocales = new Set();
+  detachedLocales = new Set();
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -59,6 +60,7 @@ class AppStore {
     runInAction(() => {
       if (this.modifiedLocales.has(locale)) {
         this.modifiedLocales.delete(locale);
+        this.detachedLocales.delete(locale);
         delete this.htmlByLocale[locale];
         if (locale === this.selectedLocale) {
           this.updateHtmlForLocale(locale);
@@ -128,11 +130,14 @@ class AppStore {
     runInAction(() => {
       this.originalHtml = data.html || '';
       this.foldersData = data.foldersData || {};
+      this.htmlByLocale = data.htmlByLocale || {};
       this.updateLocales();
       this.selectedFolder = data.selectedFolder || this.selectedFolder;
       this.selectedLocale = data.selectedLocale;
       this.isOriginalSelected = data.isOriginalSelected;
       this.highlightedText = data.highlightedText;
+      this.modifiedLocales = new Set(data.modifiedLocales || []);
+      this.detachedLocales = new Set(data.detachedLocales || []);
     });
   }
 
@@ -142,11 +147,14 @@ class AppStore {
       return;
     }
     await saveSettings({
-      html: this.html,
+      html: this.originalHtml,
       foldersData: this.foldersData,
       selectedLocale: this.selectedLocale,
       isOriginalSelected: this.isOriginalSelected,
-      highlightedText: this.highlightedText
+      highlightedText: this.highlightedText,
+      htmlByLocale: this.htmlByLocale,
+      modifiedLocales: Array.from(this.modifiedLocales),
+      detachedLocales: Array.from(this.detachedLocales)
     }, this.selectedFolder);
   }
 
@@ -321,6 +329,8 @@ class AppStore {
         this.foldersData[keyName] = {};
       }
       this.foldersData[keyName][locale] = jsonContent;
+      this.modifiedLocales.add(locale);
+      this.detachedLocales.add(locale);
       this.updateLocales();
       this.updateHtmlForAllLocales();
       this.saveAllData();
