@@ -14,7 +14,7 @@ const AddLocaleModal: React.FC<AddLocaleModalProps> = ({ onClose, onSave }) => {
     if (locale && keyName && content) {
       const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
       let hasError = false;
-      const jsonContent = blocks.reduce((acc: Record<string, string>, block: string, index: number) => {
+      const jsonContent = blocks.reduce<Record<string, string>>((acc, block, index) => {
         const key = `block_${String(index).padStart(2, '0')}`;
         if (!block.startsWith('{{') || !block.endsWith('}}')) {
           alert(`Ошибка: В локали ${locale} отсутствует символ { или } в блоке ${index + 1}`);
