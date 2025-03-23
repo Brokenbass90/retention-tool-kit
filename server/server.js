@@ -9,7 +9,8 @@ const port = process.env.PORT || 3001;
 const brandsFilePath = path.join(__dirname, 'brands.json');
 const templatesFilePath = path.join(__dirname, 'templates.json'); 
 
-app.use(express.static('build'));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../build')));
 app.use(express.json());
 app.use(express.text({ type: 'text/html', limit: '50mb' }));
 
@@ -51,8 +52,6 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).send("Failed to generate PDF: " + error.message);
   }
 });
-
-
 
 // Эндпоинт для получения всех брендов
 app.get('/api/brands', (req, res) => {
@@ -122,7 +121,6 @@ app.delete('/api/brands/:brandName', (req, res) => {
   });
 });
 
-
 // Эндпоинт для получения всех шаблонов
 app.get('/api/templates', (req, res) => {
   fs.readFile(templatesFilePath, 'utf8', (err, data) => {
@@ -189,6 +187,12 @@ app.delete('/api/templates/:templateName', (req, res) => {
       res.status(200).json({ message: 'Template deleted successfully' });
     });
   });
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 app.listen(port, () => {
