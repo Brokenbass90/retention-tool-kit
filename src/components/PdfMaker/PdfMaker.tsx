@@ -5,15 +5,12 @@ import { autorun } from 'mobx';
 import { appStore } from '../../stores/AppStore';
 import { PdfMakerProps } from '../../types';
 import './PdfMaker.css';
-import { IconType } from 'react-icons';
-import { FaCompress, FaExchangeAlt, FaArrowsAlt, FaCopy } from 'react-icons/fa';
+import * as Icons from 'react-icons/fa';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/snippets/html';
-
-const IconComponent: React.FC<{ icon: IconType }> = ({ icon: Icon }) => <Icon />;
 
 const PdfMaker: React.FC<PdfMakerProps> = observer(({ selectedTemplate }) => {
   const [wrapEnabled, setWrapEnabled] = useState<boolean>(false);
@@ -114,12 +111,14 @@ const PdfMaker: React.FC<PdfMakerProps> = observer(({ selectedTemplate }) => {
       tabIndex={0}
     >
       <div className="toolbar">
-        <button onClick={toggleWrap} className="toolbar-button"><IconComponent icon={FaExchangeAlt} /></button>
+        <button onClick={toggleWrap} className="toolbar-button">
+          <Icons.FaExchangeAlt size={16} />
+        </button>
         <button onClick={toggleFullscreen} className="fullscreen-button">
-          <IconComponent icon={isFullscreen ? FaCompress : FaArrowsAlt} />
+          {isFullscreen ? <Icons.FaCompress size={16} /> : <Icons.FaArrowsAlt size={16} />}
         </button>
         <button onClick={copyToClipboard} className={`copy-button ${isCopying ? 'copying' : ''}`}>
-          <IconComponent icon={FaCopy} />
+          <Icons.FaCopy size={16} />
         </button>
       </div>
       <AceEditor
