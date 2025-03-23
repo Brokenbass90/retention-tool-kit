@@ -43,16 +43,17 @@ export const processFiles = (files: FileList | File[], folderName: string): Prom
 
           blocksCount[locale] = (blocksCount[locale] || 0) + blocks.length;
 
-          const jsonContent = blocks.reduce<JsonContent>((acc, block, index) => {
-            const key = `block_${String(index).padStart(2, '0')}`;
+          const jsonContent: JsonContent = {};
+          for (let i = 0; i < blocks.length; i++) {
+            const block = blocks[i];
+            const key = `block_${String(i).padStart(2, '0')}`;
             if (block === '{{}}') {
-              acc[key] = " ";
+              jsonContent[key] = " ";
             } else {
               let value = block.replace(/\{\{|\}\}/g, '').trim().replace(/@@(.*?)@@/g, '<b>$1</b>');
-              acc[key] = value || " ";
+              jsonContent[key] = value || " ";
             }
-            return acc;
-          }, {});
+          }
 
           zip.folder(locale)!.file(`${jsonFileName}.json`, JSON.stringify(jsonContent, null, 4));
           resolveFile();

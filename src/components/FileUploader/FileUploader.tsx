@@ -45,22 +45,23 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesUploaded }) =
         const content = await file.text();
         const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
         let hasError = false;
-        const jsonContent = blocks.reduce<Record<string, string>>((acc, block, index) => {
-          const key = `block_${String(index).padStart(2, '0')}`;
+        const jsonContent: Record<string, string> = {};
+        for (let i = 0; i < blocks.length; i++) {
+          const block = blocks[i];
+          const key = `block_${String(i).padStart(2, '0')}`;
           if (!block.startsWith('{{') || !block.endsWith('}}')) {
-            alert(`Ошибка: В локали ${localeName} отсутствует символ { или } в блоке ${index + 1}`);
+            alert(`Ошибка: В локали ${localeName} отсутствует символ { или } в блоке ${i + 1}`);
             hasError = true;
-            return acc;
+            continue;
           }
           if (block.includes('@@') && (block.match(/@@/g)?.length ?? 0) % 2 !== 0) {
-            alert(`Ошибка: В локали ${localeName} отсутствует символ @ в блоке ${index + 1}`);
+            alert(`Ошибка: В локали ${localeName} отсутствует символ @ в блоке ${i + 1}`);
             hasError = true;
-            return acc;
+            continue;
           }
           let value = block.replace(/\{\{|\}\}/g, '').trim().replace(/@@(.*?)@@/g, '<b>$1</b>');
-          acc[key] = value || " ";
-          return acc;
-        }, {});
+          jsonContent[key] = value || " ";
+        }
 
         if (hasError) {
           alert(`Локаль ${localeName} не загружена из-за ошибок в формате.`);
