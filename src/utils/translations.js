@@ -67,6 +67,10 @@ export const translations = {
     ru: {
         "footer.block_00": "Положения и условия",
         "footer.block_01": "Отписаться от рассылки"
+    },
+    ja: {
+        "footer.block_00": "利用規約",
+        "footer.block_01": "登録解除"
     }
   };
   
