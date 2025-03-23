@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "18.x",
+    "npm": "8.x"
   },
   "dependencies": {
     "@codemirror/highlight": "^0.19.8",
@@ -45,7 +46,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "build:gh-pages": "cross-env PUBLIC_URL=https://brokenbass90.github.io/retention-tool-kit npm run build",
-    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build && npx puppeteer install"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --legacy-peer-deps && npm run build && npx puppeteer install"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
