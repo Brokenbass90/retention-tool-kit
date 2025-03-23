@@ -2,6 +2,9 @@
   "name": "html-to-pdf-converter",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@codemirror/highlight": "^0.19.8",
     "@codemirror/lang-javascript": "^6.2.3",
