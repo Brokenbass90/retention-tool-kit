@@ -14,16 +14,17 @@ const AddLocaleModal: React.FC<AddLocaleModalProps> = ({ onClose, onSave }) => {
     if (locale && keyName && content) {
       const blocks = content.match(/\{\{([\s\S]*?)\}\}/g) || [];
       let hasError = false;
-      const jsonContent = blocks.reduce<Record<string, string>>((acc, block, index) => {
-        const key = `block_${String(index).padStart(2, '0')}`;
+      const jsonContent: Record<string, string> = {};
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        const key = `block_${String(i).padStart(2, '0')}`;
         if (!block.startsWith('{{') || !block.endsWith('}}')) {
-          alert(`Ошибка: В локали ${locale} отсутствует символ { или } в блоке ${index + 1}`);
+          alert(`Ошибка: В локали ${locale} отсутствует символ { или } в блоке ${i + 1}`);
           hasError = true;
-          return acc;
+          continue;
         }
-        acc[key] = block.slice(2, -2).trim();
-        return acc;
-      }, {});
+        jsonContent[key] = block.slice(2, -2).trim();
+      }
 
       if (!hasError) {
         onSave({ locale, keyName, content: JSON.stringify(jsonContent) });
