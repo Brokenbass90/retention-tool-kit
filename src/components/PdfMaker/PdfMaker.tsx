@@ -5,7 +5,7 @@ import { autorun } from 'mobx';
 import { appStore } from '../../stores/AppStore';
 import { PdfMakerProps } from '../../types';
 import './PdfMaker.css';
-import * as Icons from 'react-icons/fa';
+import { FaExchangeAlt, FaCompress, FaArrowsAlt, FaCopy } from 'react-icons/fa';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -112,13 +112,15 @@ const PdfMaker: React.FC<PdfMakerProps> = observer(({ selectedTemplate }) => {
     >
       <div className="toolbar">
         <button onClick={toggleWrap} className="toolbar-button">
-          <Icons.FaExchangeAlt size={16} />
+          {React.createElement(FaExchangeAlt, { size: 16 })}
         </button>
         <button onClick={toggleFullscreen} className="fullscreen-button">
-          {isFullscreen ? <Icons.FaCompress size={16} /> : <Icons.FaArrowsAlt size={16} />}
+          {isFullscreen 
+            ? React.createElement(FaCompress, { size: 16 })
+            : React.createElement(FaArrowsAlt, { size: 16 })}
         </button>
         <button onClick={copyToClipboard} className={`copy-button ${isCopying ? 'copying' : ''}`}>
-          <Icons.FaCopy size={16} />
+          {React.createElement(FaCopy, { size: 16 })}
         </button>
       </div>
       <AceEditor
