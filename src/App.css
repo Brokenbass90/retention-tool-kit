@@ -9,9 +9,11 @@
 
 .top-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   padding: 8px;
   background: #f1f8ff;
+  gap: 8px;
 }
 
 .original-btn, .locale-btn {
@@ -29,22 +31,19 @@
 }
 
 .locale-btn-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  margin-right: 8px; 
 }
 
 .locale-btn {
-  padding: 8px 8px 8px 16px;
-  border: 1px solid #d0d0d0;
-  border-right: none; 
-  border-radius: 4px 0 0 4px; 
-  background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
   display: flex;
   align-items: center;
-  gap: 4px;
+  padding: 6px 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px 0 0 4px;
+  background-color: #fff;
+  cursor: pointer;
+  height: 35px;
 }
 
 .locale-btn.selected {
@@ -53,30 +52,29 @@
 
 .locale-actions {
   display: flex;
-  align-items: center;
 }
 
-.edit-locale-btn, .reset-locale-btn {
-  padding: 7.2px;
-  font-size: 14px;
-  border: 1px solid #d0d0d0;
+
+.edit-locale-btn,
+.reset-locale-btn {
+  border-top: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+  padding: 6px 10px;
   background-color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 35px;
 }
-
+.border-radius-right {
+  border-radius: 0 4px 4px 0 !important;
+}
 .edit-locale-btn {
-  border-radius: 0;
   border-left: none;
+  border-radius: 0;
 }
 
 .reset-locale-btn {
-  border-radius: 0 4px 4px 0;
   border-left: none;
-  color: #f57c00;
 }
 
 .edit-locale-btn:hover, .reset-locale-btn:hover {
@@ -268,4 +266,28 @@
 
 .discard-changes-btn:hover {
   background: #f5f5f5;
+}
+
+.buttons-area {
+  display: flex;
+  background-color: #f1f8ff; 
+  justify-content: flex-end; 
+  align-items: center;
+  padding: 20px;
+  border-top: 1px solid #d9d9d9;
+  gap: 20px;
+}
+
+.bottom-btn {
+  padding: 10px 15px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bottom-btn:hover {
+  background-color: #40a9ff;
 }

@@ -33,6 +33,7 @@
   border-radius: 4px;
   overflow: hidden;
   background: #1e1e1e;
+  overflow-y: auto;
 }
 
 /* CodeMirror стили */

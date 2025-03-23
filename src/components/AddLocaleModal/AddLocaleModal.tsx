@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import CodeMirror from '@uiw/react-codemirror';
+import { EditorView } from '@codemirror/view';
+import { darkTheme, syntaxHighlighting } from '../CodeEditor/syntaxHighlighting';
 import { AddLocaleModalProps } from '../../types';
 import './AddLocaleModal.css';
 
@@ -40,11 +43,21 @@ const AddLocaleModal: React.FC<AddLocaleModalProps> = ({ onClose, onSave }) => {
             onChange={(e) => setKeyName(e.target.value)}
           />
         </div>
-        <textarea
-          placeholder="Enter text in the format {{...}}"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+
+        <div className="editor-container">
+          <CodeMirror
+            value={content}
+            height="300px"
+            basicSetup={{ lineNumbers: true, tabSize: 2 }}
+            onChange={(value) => setContent(value)}
+            theme={darkTheme}
+            extensions={[
+              EditorView.lineWrapping,
+              syntaxHighlighting
+            ]}
+          />
+        </div>
+
         <div className="modal-buttons">
           <button className='modal-button mr10' onClick={handleSave}>Add</button>
           <button className='modal-button' onClick={onClose}>Close</button>

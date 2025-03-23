@@ -12,10 +12,11 @@ import EditLocaleModal from './components/EditLocaleModal/EditLocaleModal';
 import BrandConfigurator from './components/BrandConfigurator/BrandConfigurator';
 import BrandList from './components/BrandList/BrandList';
 import TemplateList from './components/TemplateList/TemplateList';
-import LocaleManager from './components/LocaleManager/LocaleManager';
+// import LocaleManager from './components/LocaleManager/LocaleManager';
 import { getSettings, saveSettings } from './utils/indexedDB';
 import { runInAction } from 'mobx';
 import { replacePlaceholders } from './utils/replacePlaceholders';
+import './components/BottomPanels/BottomPanels.css';
 
 export const combineHtmlAndStyles = (htmlContent, styles) => {
   let updatedHtml = htmlContent;
@@ -30,6 +31,8 @@ export const combineHtmlAndStyles = (htmlContent, styles) => {
 
 
 const App = observer(() => {
+  const [isTemplatePanelOpen, setTemplatePanelOpen] = useState(false);
+  const [isBrandPanelOpen, setBrandPanelOpen] = useState(false);
   const [buttonColors, setButtonColors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
@@ -37,6 +40,9 @@ const App = observer(() => {
   const [brandToEdit, setBrandToEdit] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null); // Добавляем состояние для выбранного шаблона
 
+
+
+  
   // eslint-disable-next-line
   const [currentBrand, setCurrentBrand] = useState(null);
 
@@ -219,14 +225,7 @@ const App = observer(() => {
                 </span>
               )}
             </button>
-            <div className="locale-actions">
-              <button
-                className="edit-locale-btn"
-                onClick={() => appStore.openEditLocaleModal(locale)}
-                title="Редактировать локаль"
-              >
-                ✎
-              </button>
+            
               {appStore.modifiedLocales.has(locale) && (
                 <button
                   className="reset-locale-btn"
@@ -240,6 +239,14 @@ const App = observer(() => {
                   🔄
                 </button>
               )}
+              <div className="locale-actions">
+              <button
+                className="edit-locale-btn border-radius-righ" 
+                onClick={() => appStore.openEditLocaleModal(locale)}
+                title="Редактировать локаль"
+              >
+                ✎
+              </button>
             </div>
           </div>
         ))}
@@ -291,7 +298,10 @@ const App = observer(() => {
         <HtmlWindow htmlContent={appStore.html} onElementClick={(text) => appStore.setHighlightedText(text)} />
       </div>
       <div className="buttons-area">
+      <button className="convert-button txt-to-json-toggle" onClick={() => setTemplatePanelOpen(true)}>Templates</button>
+        <button className="convert-button txt-to-json-toggle" onClick={() => setBrandPanelOpen(true)}>Brands</button>
         <ConvertButton html={appStore.html} />
+        
         <button className="convert-button txt-to-json-toggle" onClick={appStore.toggleTxtToJson}>
           {appStore.showTxtToJson ? 'Close Txt to JSON' : 'Txt to JSON'}
         </button>
@@ -309,20 +319,22 @@ const App = observer(() => {
         brandToEdit={brandToEdit}
       />
 
-      <div className="brand-list-panel">
-        <BrandList
-          brands={brands}
-          onDelete={handleDeleteBrand}
-          onApplyBrand={handleApplyBrand}
-          onEditBrand={handleEditBrand}
-          toggleConfigurator={() => {
-            setIsConfiguratorOpen(true);
-            setBrandToEdit(null);
-          }}
-        />
-      </div>
+      <TemplateList
+        isOpen={isTemplatePanelOpen}
+        onClose={() => setTemplatePanelOpen(false)}
+        onApplyTemplate={handleApplyTemplate}
+      />
 
-      <TemplateList onApplyTemplate={handleApplyTemplate} />
+      <BrandList 
+        isOpen={isBrandPanelOpen} 
+        onClose={() => setBrandPanelOpen(false)}
+        brands={brands} 
+        onApplyBrand={handleApplyBrand}
+        onEditBrand={handleEditBrand}
+        onDelete={handleDeleteBrand}
+        toggleConfigurator={() => setIsConfiguratorOpen(true)}
+      />
+
     </div>
   );
 });
