@@ -92,13 +92,14 @@ const EditLocaleModal: React.FC<EditLocaleModalProps> = ({ onClose, onSave, loca
   const convertTextToJson = (text: string): Record<string, string> => {
     const blocks = text.match(/{{[\s\S]*?}}/g) || [];
     const jsonContent: Record<string, string> = {};
-    blocks.forEach((block, index) => {
-      const key = `block_${String(index).padStart(2, '0')}`;
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      const key = `block_${String(i).padStart(2, '0')}`;
       const cleanBlock = block
         .replace(/^{{|}}$/g, '')
         .replace(/@@(.*?)@@/g, '<b>$1</b>');
       jsonContent[key] = cleanBlock;
-    });
+    }
     return jsonContent;
   };
 
